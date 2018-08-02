@@ -36,10 +36,17 @@ def send_email(user, pwd, recipient_list, subject, body):
 def main(user, pwd, recipient_list, subject, body):
     send_email(user, pwd, recipient_list, subject, body)
 
+def get_gmail_info():
+    print("not finished.....")
+    info_dict={
+        "user":"",
+        "pwd":""
+    }
+    return info_dict
 
 def gmail_test():
-    user='hanzhong1987@gmail.com'
-    pwd="Scroll138127"
+    gmail_info=get_gmail_info()
+    
     recipient_list=["hanzhong1987@gmail.com","hanzhong2018@docomo.ne.jp"]
     subject="test mail"
     body="hello"
