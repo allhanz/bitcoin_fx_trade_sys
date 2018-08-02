@@ -1,0 +1,20 @@
+Metadata-Version: 1.1
+Name: pybitflyer
+Version: 0.1.9
+Summary: Python wrapper for bitFlyer's REST API.
+Home-page: https://github.com/yagays/pybitflyer
+Author: yag_ays
+Author-email: yanagi.ayase@gmail.com
+License: UNKNOWN
+Description-Content-Type: UNKNOWN
+Description: UNKNOWN
+Keywords: bitcoin,bitflyer,wrapper,REST API
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Internet :: WWW/HTTP
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
