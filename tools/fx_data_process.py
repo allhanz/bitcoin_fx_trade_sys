@@ -5,11 +5,24 @@ import numpy as np
 import quandl
 from datetime import timedelta, date
 import re
+import env_settings as env
 
 # global vars
 quandl.ApiConfig.api_version = '2015-04-09'
 quandl.ApiConfig.api_key = 'q6sne2ob3eZrg7G4KkBi' # get the api from my account
 currency_list_file="currency_list.xlsx"
+
+def get_quandl_api_key():
+    api_dict={
+        "date":None,
+        "api_key":None
+    }
+    acc_file=env.quandl_api_file
+    pd_data=pd.read_excel(acc_file)
+    version_date=pd.to_datetime(pd_data["date"].values[0])
+    api_dict["date"]=version_date.strftime("%Y-%m-%d")
+    api_dict["api_key"]=str(pd_data["api_key"].values[0])
+    return api_dict
 
 def check_currency_name(currency_name):
     currency_list=get_currency_enum_list()
@@ -90,6 +103,7 @@ def save_fx_data(fx_pd_data,filename):
         save_pd_data(fx_pd_data,filename)
 
 def main():
+    #fx data download test
     currency_exp=["AUDJPY	AUDNZD	AUDUSD	CADJPY	EURAUD	EURCAD	EURCHF	EURDKK	EURGBP	EURHUF	EURJPY EURNOK	EURSEK	EURUSD	GBPAUD	GBPCAD	GBPCHF	GBPJPY	GBPUSD	NZDUSD	USDCAD	USDCHF	USDDKK	USDHKD	USDHUF	USDILS	USDJPY	USDKRW	USDMXN	USDNOK	USDSEK	USDSGD	USDZAR"]
     start_date = date(2013, 1, 1)
     end_date = date(2015, 6, 2)

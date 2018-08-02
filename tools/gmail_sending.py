@@ -2,6 +2,8 @@ import smtplib
 import os
 import sys
 import time
+import env_settings as env
+import pandas as pd
 
 #please delete the password
 #test no problem
@@ -37,7 +39,9 @@ def main(user, pwd, recipient_list, subject, body):
     send_email(user, pwd, recipient_list, subject, body)
 
 def get_gmail_info():
+    pd_data=pd.read_excel()
     print("not finished.....")
+
     info_dict={
         "user":"",
         "pwd":""
@@ -46,7 +50,7 @@ def get_gmail_info():
 
 def gmail_test():
     gmail_info=get_gmail_info()
-    
+
     recipient_list=["hanzhong1987@gmail.com","hanzhong2018@docomo.ne.jp"]
     subject="test mail"
     body="hello"
