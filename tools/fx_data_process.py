@@ -8,9 +8,10 @@ import re
 import env_settings as env
 
 # global vars
-quandl.ApiConfig.api_version = '2015-04-09'
-quandl.ApiConfig.api_key = 'q6sne2ob3eZrg7G4KkBi' # get the api from my account
-currency_list_file="currency_list.xlsx"
+def set_quandl_api(api_dict):
+    quandl.ApiConfig.api_key = api_dict["api_key"]
+    quandl.ApiConfig.api_version=api_dict["date"]
+    return quandl
 
 def get_quandl_api_key():
     api_dict={
@@ -22,6 +23,7 @@ def get_quandl_api_key():
     version_date=pd.to_datetime(pd_data["date"].values[0])
     api_dict["date"]=version_date.strftime("%Y-%m-%d")
     api_dict["api_key"]=str(pd_data["api_key"].values[0])
+    #print("api_dict:",api_dict)
     return api_dict
 
 def check_currency_name(currency_name):
@@ -53,6 +55,7 @@ def daterange(start_date, end_date):
         date_list.append(single_date.strftime("%Y-%m-%d"))
     if len(date_list)>0:
         return date_list
+
 def check_fx_database(database_name):
     fx_database_enum=["CLS/HP","CLS/IDHP"]
     #CLS/HP database start time:2015-09-01
@@ -62,30 +65,38 @@ def check_fx_database(database_name):
     else:
         return False
 
-def download_fx_one_day_data(database_name,currency_name,date_str):# date format: ex:2018-xx-xx
+def download_fx_one_day_data(quandl_api,database_name,currency_name,date_str):# date format: ex:2018-xx-xx
     if not check_fx_database(database_name):
-        database_name="CLS/HP"
+        database_name="CLS/IDH"
     date_re=re.compile(r"[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$")
     flag =date_re.match(date_str)
     if flag==None:
         print("data_str format error,please check it again.....")
         return
-    fx_data=quandl.get_table(database_name, fx_business_date=date_str, currency=currency_name)
+    print("database_name:{},date_str:{},currency_name:{}".format(database_name,date_str,currency_name))
+    #date_str="2018-01-02"
+    fx_data=quandl_api.get_table(database_name,fx_business_date=date_str, currency=currency_name)
+    #for test
+    #fx_data=quandl.get_table('CLS/IDH', fx_business_date='2018-01-02', currency='AUDJPY')
     if not fx_data.empty:
         return fx_data
     else:
         print("fx_data empty,please check it again....")
 
-def download_daterange_his_period_data(database_name,currency_name,start_date,end_date):
+def download_daterange_his_period_data(quandl_api,database_name,currency_name,start_date,end_date):
     if database_name==None or database_name=="":
-        database_name="CLS/HP"
+        database_name="CLS/IDH"
 
     fx_all_pd=pd.DataFrame()
     date_list=daterange(start_date,end_date)
     daily_fx_pd=pd.DataFrame()
     for single_day in date_list:
-        daily_fx_pd=download_fx_one_day_data(database_name,currency_name,single_day)
+        daily_fx_pd=download_fx_one_day_data(quandl_api,database_name,currency_name,single_day)
         fx_all_pd=fx_all_pd.append(daily_fx_pd,ignore_index=True)
+        print("fx_all_pd:",fx_all_pd)
+        filename=currency_name+"_"+single_day+".xlsx"
+        fullpath=env.fx_data_root_path+"/"+filename
+        save_fx_data(fx_all_pd,fullpath)
 
     if not fx_all_pd.empty:
         return fx_all_pd
@@ -96,7 +107,7 @@ def save_pd_data(pd_data,filename):
         pd_data=pd_data.append(old_pd)
 
     if not pd_data.empty:
-        pd_data.save(filename,encoding="utf-8")
+        pd_data.to_excel(filename,encoding="utf-8")
 
 def save_fx_data(fx_pd_data,filename):
     if not fx_pd_data.empty:
@@ -104,13 +115,20 @@ def save_fx_data(fx_pd_data,filename):
 
 def main():
     #fx data download test
-    currency_exp=["AUDJPY	AUDNZD	AUDUSD	CADJPY	EURAUD	EURCAD	EURCHF	EURDKK	EURGBP	EURHUF	EURJPY EURNOK	EURSEK	EURUSD	GBPAUD	GBPCAD	GBPCHF	GBPJPY	GBPUSD	NZDUSD	USDCAD	USDCHF	USDDKK	USDHKD	USDHUF	USDILS	USDJPY	USDKRW	USDMXN	USDNOK	USDSEK	USDSGD	USDZAR"]
-    start_date = date(2013, 1, 1)
-    end_date = date(2015, 6, 2)
+    currency_enum=["AUDJPY	AUDNZD	AUDUSD	CADJPY	EURAUD	EURCAD	EURCHF	EURDKK	EURGBP	EURHUF	EURJPY EURNOK	EURSEK	EURUSD	GBPAUD	GBPCAD	GBPCHF	GBPJPY	GBPUSD	NZDUSD	USDCAD	USDCHF	USDDKK	USDHKD	USDHUF	USDILS	USDJPY	USDKRW	USDMXN	USDNOK	USDSEK	USDSGD	USDZAR"]
+    currency_name="AUDJPY"
+    start_date = date(2018, 1, 1)
+    end_date = date(2018, 1, 3)
     date_list=daterange(start_date, end_date)
-    #print("date_list:",date_list)
-    fx_data=download_fx_one_day_data("","AUDJPY","2016-07-20")
-    print("fx_data:",fx_data)
+    print("date_list:",date_list)
+    api_dict=get_quandl_api_key()
+    #print("api_dict:",api_dict)
+    quandl_api=set_quandl_api(api_dict)
+    # for test
+    fx_data=download_fx_one_day_data(quandl_api,"",currency_name,"2018-01-02")
+    #print("fx_data:",fx_data)
+    pd_data=download_daterange_his_period_data(quandl_api,"",currency_name,start_date,end_date)
+    print("pd_data:",pd_data)
 
 if __name__=="__main__":
     main()

@@ -1,3 +1,6 @@
+
+# this tool can be method added by yourself
+
 .. -*- mode: rst -*-
 
 .. image:: https://img.shields.io/pypi/v/pybitflyer.svg?maxAge=2592000   :target:

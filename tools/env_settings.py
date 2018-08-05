@@ -4,7 +4,7 @@ import os
 #gmail api_key
 auth_root_path="../../auth_info"
 gmail_file=auth_root_path+"/gmail_account.xlsx"
-api_file=auth_root_path;"/bitflyer_account.xlsx"
+bitflyer_api_file=auth_root_path+"/bitflyer_account.xlsx"
 quandl_api_file=auth_root_path+"/quandl_account.xlsx"
 
 #data
@@ -28,3 +28,7 @@ bitflyer_account_balance_path=account_balance_data_root_path+"/bitflyer"
 
 
 currency_list_file="./currency_list.xlsx"
+
+#fx data 
+fx_data_root_path=common_data_root_path+"/fx_data"
+

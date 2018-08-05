@@ -1,3 +1,4 @@
+#this tool is used for downloading the bitcoin price data from different trader server
 import sys
 import os
 import numpy as np
@@ -6,6 +7,8 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 import time
 from datetime import datetime
+import env_settings as env
+
 #import error
 #from CodernityDB.database import Database 
 from tinydb import TinyDB, Query

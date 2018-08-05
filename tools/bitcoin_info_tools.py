@@ -1,3 +1,5 @@
+# this tool is used for trading in bitflyer trading server
+
 import pybitflyer
 import sys
 import os
@@ -5,13 +7,14 @@ import os
 #import bitflyer_api as pybitflye
 import pandas as pd
 from datetime import datetime
+import env_settings as env
 
 #api manual
 #https://lightning.bitflyer.com/docs?lang=zh-CN#http-api
 
 def get_key_info(key_file):
     if key_file==None or key_file=="":
-        key_file="../../bitfly_account.xlsx"
+        key_file=env.bitflyer_api_file
     if not os.path.exists(key_file):
         print("{} file not exist. please check it again....")
     pd_data=pd.read_excel(key_file)
@@ -21,7 +24,8 @@ def get_key_info(key_file):
     info_dict["api_key"]=api_key[0]
     info_dict["api_password"]=api_password[0]
     if info_dict:
-        print("info_dict:",info_dict)
+        #print("info_dict:",info_dict)
+        print("get the bitflyer api with no error.....")
         return info_dict
     else:
         print("key info error,please check it.....")
