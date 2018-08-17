@@ -75,17 +75,17 @@ def search_muilt_data(db_obj,collection_name,find_json):
 def update_one_data():
     print("not finished.....")
 
-def insert_one_data(db_obj,collection_name,data):
-    result = db_obj[collection_name].insert_one(data)
+def insert_one_data(collection_obj,data):
+    result = collection_obj.insert_one(data)
     if result:
         return True
     else:
         return False
 
-def insert_many_data(db_obj,collection_name,data_json_list):
+def insert_many_data(collection_obj,data_json_list):
     if not check_data_type(data_json_list,"list"):
         return
-    result=db_obj[collection_name].insert_many(data_json_list)
+    result=collection_obj.insert_many(data_json_list)
     if result:
         return True
     else:
@@ -93,7 +93,7 @@ def insert_many_data(db_obj,collection_name,data_json_list):
 
 def check_data_type(data,check_type):
     flag=None
-    type_enm=["str","dict","int","float"]
+    type_enm=[str,dict,int,float]
     if check_type not in type_enm:
         return
     if isinstance(data,check_type):
@@ -102,11 +102,11 @@ def check_data_type(data,check_type):
         flag=False
     return flag
 
-def count_item(db_obj,collection_name,find_json):
+def count_item(collection_obj,find_json):
     if not check_data_type(find_json,"dict"):
         return
 
-    count=db_obj[collection_name].find(find_json).count()
+    count=collection_obj.find(find_json).count()
     if count:
         return count
     else:
@@ -118,16 +118,23 @@ def check_bool(bool_data):
     else:
         return False
 
-def delete_one_data(db_obj,collection_name,condition_json):
-    result=db_obj[collection_name].delete_one(condition_json)
-    return check_boll(result)
+def delete_one_data(collection_obj,condition_json):
+    result=collection_obj.delete_one(condition_json)
+    return check_bool(result)
 
-def delete_many_data(db_obj,collection_name,condition_json):
-    result=db_obj[collection_name].delete_many(condition_json)
-    return check_boll(result)
+def delete_many_data(collection_obj,condition_json):
+    result=collection_obj.delete_many(condition_json)
+    return check_bool(result)
 
 def main():
     #write your test code
+    db=build_one_database("test_db",None,None)
+    collection_obj=build_one_collection(db,"test_collection")
+    test_data={
+        "test":"test"
+    }
+    res=insert_one_data(collection_obj,test_data)
+    print("res:",res)
     pprint("not finished.....")
 
 if __name__=="__main__":

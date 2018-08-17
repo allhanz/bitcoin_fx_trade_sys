@@ -11,11 +11,23 @@ import time
 from datetime import datetime
 from pprint import pprint
 import mongodb_api
+import concurrent.futures
+import pymongo
+import random
+
+#OverflowError: MongoDB can only handle up to 8-byte ints
+"""
+Size of long long types is 8 bytes
+Signed long long min: -9223372036854775808 max: 9223372036854775807
+Unsigned long long min: 0 max: 18446744073709551615
+"""
+MAX_RANGE=10**8
 
 phantomJS_path="/usr/local/bin/phantomjs" # please set the path
 driver=webdriver.PhantomJS(executable_path=phantomJS_path)
 wait=WebDriverWait(driver,3)
 data_format={
+    "_id":None,
     "name":None,
     "buy_price":None,
     "sell_price":None,
@@ -60,6 +72,7 @@ def get_realtime_price(driver):
     data_format["time"]=datetime.now().strftime("%Y%m%dT%H%M%S")
     data_format["spread_no"]=spread_no
     data_format["trade_vol"]=trade_vol
+    data_format["_id"]=random.randint(0,MAX_RANGE)
 
     return data_format
 
@@ -70,22 +83,34 @@ def build_bitcoin_database(db_name,collection_name):
 
     return collection
 
+def check_data_downloaed():
+    collection=build_bitcoin_database("bitcoin_db","price_collection")
+    inserted_data=collection.find()
+    for data in inserted_data:
+        pprint(data)
+    print("inserted_data:\n",inserted_data)
+    return inserted_data
+
 def main():
     url="https://cc.minkabu.jp/pair/BTC_JPY"
     driver.get(url)
     delta_time=1 #unit second
     collection=build_bitcoin_database("bitcoin_db","price_collection")
+    collection.create_index([("index", pymongo.DESCENDING)])
+    executor = concurrent.futures.ProcessPoolExecutor(max_workers=2)
 
     while(True):
         start_time=time.time()
         data=get_realtime_price(driver)
         print("data:",data)
-        end_time=time.time()
-        spend_time=end_time-start_time
+
         res=collection.insert_one(data)
+        #res=executor.submit(collection.insert_one,data)
         if not res:
+        #if not res.result:
             print("insert data error....")
-            
+        end_time=time.time()
+        spend_time=end_time-start_time  
         if delta_time-spend_time>=0:
             time.sleep(delta_time-spend_time)
 
