@@ -1,4 +1,4 @@
-# for the real bitcoin trading 
+# for the bitcoin trading simulation
 
 import pybitflyer
 import pandas as pd
@@ -8,10 +8,9 @@ import bitcoin_info_tools
 sys.path.append(os.path.abspath("../tools"))
 import env_settings as env
 
-
 def main():
-    api=bitcoin_info_tools.set_api_info()
-    print("api:",api)
-
+    print("not finished.....")
+    
 if __name__=="__main__":
     main()
+

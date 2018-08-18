@@ -1,4 +1,6 @@
 #this tool is used for downloading the bitcoin price data from different trader server
+# the website change very frequency
+
 import sys
 import os
 import numpy as np
@@ -8,6 +10,10 @@ from bs4 import BeautifulSoup
 import time
 from datetime import datetime
 import env_settings as env
+import data_process_lib as lib
+from urllib2 import request
+import re
+from lxml import etree
 
 #import error
 #from CodernityDB.database import Database 
@@ -124,7 +130,10 @@ def abstract_data(soup_data): #abstract the data from html data
             for item in td_ele_list:
     """
     company_list=["btc_jpy_zaif","btc_jpy_quoine","btc_jpy_bitflyer","btc_jpy_btcbox","btc_jpy_coincheck","btc_jpy_bitbank"]
-    td_class_name_list=["data_tick_company","data_tick_bid","data_tick_ask","data_tick_spread","data_tick_volume"] # tag name:td
+    
+    #td_class_name_list=["data_tick_company","data_tick_bid","data_tick_ask","data_tick_spread","data_tick_volume"] # tag name:td
+    td_class_name_list=["data_tick_company","tbl-price price-up","tbl-price price-down","data_tick_spread","data_tick_volume"] # tag name:td
+    
     volume_tag="span"
     price_dict_list=[]
     for class_name in company_list:
@@ -132,7 +141,10 @@ def abstract_data(soup_data): #abstract the data from html data
         if data_ele:
             td_list=data_ele.findAll("td")
             for item_ele in td_list:
+                print("item_ele:",item_ele)
                 attr_dict=item_ele.attrs
+                print("attr_dict:",attr_dict)
+
                 if len(attr_dict)>=1 and "class" in attr_dict.keys():
                     if td_class_name_list[0] in attr_dict["class"]:
                         name=item_ele.text
@@ -339,6 +351,79 @@ def fast_price_downloader(url): #not used because of the slow insert into tinyda
             insert_data_into_database(data_list)
             data_list=[]
         """
+    #
+def get_bitcoin_fx_price(url):
+    driver = webdriver.Firefox(options=options)
+    driver.get(url)
+    bitflyer_name_xpath='//*[@id="pair_tick_rate_label"]/div/div[2]/table/tbody/tr[1]/td[1]'
+    bitcoin_fx_sell_price_xpath='//*[@id="pair_tick_rate_label"]/div/div[2]/table/tbody/tr[1]/td[2]'
+    bitcoin_fx_buy_price_xpath='//*[@id="pair_tick_rate_label"]/div/div[2]/table/tbody/tr[1]/td[3]'
+    thread_number_xpath='//*[@id="pair_tick_rate_label"]/div/div[2]/table/tbody/tr[1]/td[4]'
+    trade_volume_24hr_xpath='//*[@id="pair_tick_rate_label"]/div/div[2]/table/tbody/tr[1]/td[5]/span'
+    all_price_pd=pd.DataFrame()
+    while(True):
+        bit_fx_dict={
+            "name":None,
+            "buy_price":None,
+            "sell_price":None,
+            "avg_price":None,
+            "trade_vol":None,
+            "thread_nu":None,
+            "time":None
+        }
+        try:
+            name_ele=driver.find_element_by_xpath(bitflyer_name_xpath)
+            name=name_ele.text
+
+            sell_price_ele=driver.find_element_by_xpath(bitcoin_fx_sell_price_xpath)
+            sell_price=sell_price_ele.text
+
+            buy_price_ele=driver.find_element_by_xpath(bitcoin_fx_buy_price_xpath)
+            buy_price=buy_price_ele.text
+
+            thread_number_ele=driver.find_element_by_xpath(thread_number_xpath)
+            thr_nu=thread_number_ele.text
+
+            trade_volume_ele=driver.find_element_by_xpath(trade_volume_24hr_xpath)
+            trade_vol=trade_volume_ele.text
+
+            time_now=datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+
+            bit_fx_dict["name"]=name
+            bit_fx_dict["buy_price"]=lib.parse_int(buy_price)
+            bit_fx_dict["sell_price"]=lib.parse_int(sell_price)
+            bit_fx_dict["trade_vol"]=lib.parse_int(trade_vol)
+            bit_fx_dict["thread_nu"]=lib.parse_int(thr_nu)
+            bit_fx_dict["time"]=time_now
+            bit_fx_dict["avg_price"]=(lib.parse_int(buy_price)+lib.parse_int(sell_price))/2
+            one_price_pd=pd.DataFrame(bit_fx_dict)
+            print("bit_fx_price:",bit_fx_dict)
+            all_price_pd=
+        except KeyboardInterrupt:
+            time.sleep(1)
+            all_pd=all_pd.append(all_list,ignore_index=True)
+            print(len(all_pd))
+            if not all_pd.empty:
+                print("saveing the data,please wait........")
+                save_pd_data_to_csv(all_pd,filename)
+                print("data saved........")
+
+    driver.close()
+    print("webdriver closed......")
+
+#download the html data from website
+def get_html_str(url):
+    res_obj=request.urlopen(url)
+    html_byte=res_obj.read()
+    if isinstance(html_byte,bytes):
+        return html_byte.decode("utf-8")
+    elif isinstance(html_byte,str):
+        return html_byte
+def bitcoin_realtime_price_data_abstraction(html_str):
+    if isinstance(html_str,str):
+        soup=BeautifulSoup(html_str)
+    else:
+        return
 
 def main():
     mode=sys.argv[1]
@@ -349,8 +434,11 @@ def main():
         price_downloader(url)
     elif mode=="database":
         price_downloader_database(url)
+    elif mode=="btc_fx":
+        get_bitcoin_fx_price(url)
+
 
 if __name__=="__main__":
     main()
 
-# run command:python data_downloader.py normal
+# run command:python realtime_bitcoin_price_data_downloader.py btc_fx
