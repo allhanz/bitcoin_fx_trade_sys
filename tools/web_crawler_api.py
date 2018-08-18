@@ -14,6 +14,7 @@ import mongodb_api
 import concurrent.futures
 import pymongo
 import random
+import hashlib
 
 #OverflowError: MongoDB can only handle up to 8-byte ints
 """
@@ -24,8 +25,12 @@ Unsigned long long min: 0 max: 18446744073709551615
 MAX_RANGE=10**10
 
 phantomJS_path="/usr/local/bin/phantomjs" # please set the path
+firefox_webdriver_path="/home/hanz/firefox_webdriver/geckodriver"
+
 driver=webdriver.PhantomJS(executable_path=phantomJS_path)
 wait=WebDriverWait(driver,3)
+#firefox_driver=webdriver.Firefox(executable_path=firefox_webdriver_path)
+
 data_format={
     "_id":None,
     "name":None,
@@ -36,6 +41,16 @@ data_format={
     "spread_no":None,
     "trade_vol":None
 }
+def hash_sha512(str_data):
+    hash_object = hashlib.sha512(str_data.encode("utf-8"))
+    hex_dig = hash_object.hexdigest()
+    print("hex_dig:",hex_dig)
+    return hex_dig
+    
+def hash_sha256(str_data):
+    hash_object = hashlib.sha256(str_data.encode("utf-8"))
+    hex_dig = hash_object.hexdigest()
+    return hex_dig
 
 #def get_realtime_price(url):
 def get_realtime_price(driver):
@@ -75,7 +90,8 @@ def get_realtime_price(driver):
     data_format["date"]=now_time.strftime("%Y%m%d")
     data_format["spread_no"]=spread_no
     data_format["trade_vol"]=trade_vol
-    data_format["_id"]=random.randint(0,MAX_RANGE)
+    #data_format["_id"]=random.randint(0,MAX_RANGE)
+    data_format["_id"]=hash_sha512(str(data_format))
 
     return data_format
 
@@ -96,7 +112,7 @@ def check_data_downloaed():
 
 def main():
     url="https://cc.minkabu.jp/pair/BTC_JPY"
-    driver.get(url)
+    driver.get(url) #phantomjs
     delta_time=1 #unit second
     collection=build_bitcoin_database("bitcoin_db","price_collection")
     collection.create_index([("index", pymongo.DESCENDING)])
@@ -104,14 +120,17 @@ def main():
 
     while(True):
         start_time=time.time()
-        data=get_realtime_price(driver)
-        print("data:",data)
-
-        res=collection.insert_one(data)
-        #res=executor.submit(collection.insert_one,data)
-        if not res:
-        #if not res.result:
-            print("insert data error....")
+        try:
+            data=get_realtime_price(driver)
+            print("data:",data)
+            res=collection.insert_one(data)
+            #res=executor.submit(collection.insert_one,data)
+            if not res:
+            #if not res.result:
+                print("insert data error....")
+        except:
+            print("waiting for a minute and try again....")
+            pass
         end_time=time.time()
         spend_time=end_time-start_time  
         if delta_time-spend_time>=0:
