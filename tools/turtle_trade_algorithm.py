@@ -1,3 +1,4 @@
+# the trade algorithm method from the book which is "turtle trading principle ""
 import sys
 import os
 import pandas as pd
