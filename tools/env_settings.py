@@ -32,3 +32,6 @@ currency_list_file="./currency_list.xlsx"
 #fx data 
 fx_data_root_path=common_data_root_path+"/fx_data"
 
+#the bitcoin price was stored in mongodb database
+
+

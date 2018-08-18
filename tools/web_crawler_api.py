@@ -21,7 +21,7 @@ Size of long long types is 8 bytes
 Signed long long min: -9223372036854775808 max: 9223372036854775807
 Unsigned long long min: 0 max: 18446744073709551615
 """
-MAX_RANGE=10**8
+MAX_RANGE=10**10
 
 phantomJS_path="/usr/local/bin/phantomjs" # please set the path
 driver=webdriver.PhantomJS(executable_path=phantomJS_path)
@@ -31,6 +31,7 @@ data_format={
     "name":None,
     "buy_price":None,
     "sell_price":None,
+    "date":None,
     "time":None,
     "spread_no":None,
     "trade_vol":None
@@ -66,10 +67,12 @@ def get_realtime_price(driver):
     trade_vol=trade_vol_ele.text
 
     #data_format value
+    now_time=datetime.now()
     data_format["name"]=name
     data_format["buy_price"]=buy_price
     data_format["sell_price"]=sell_price
-    data_format["time"]=datetime.now().strftime("%Y%m%dT%H%M%S")
+    data_format["time"]=now_time.strftime("%H%M%S")
+    data_format["date"]=now_time.strftime("%Y%m%d")
     data_format["spread_no"]=spread_no
     data_format["trade_vol"]=trade_vol
     data_format["_id"]=random.randint(0,MAX_RANGE)
