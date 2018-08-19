@@ -182,3 +182,73 @@ See /usr/include/servers/bootstrap_defs.h for the error codes.
 1534581025392	Marionette	WARN	TLS certificate errors will be ignored for this session
 [Parent 10884, Gecko_IOThread] WARNING: pipe error (54): Connection reset by peer: file /build/firefox-mWstsA/firefox-61.0.1+build1/ipc/chromium/src/chrome/common/ipc_channel_posix.cc, line 353
 *** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1534591331131	geckodriver	INFO	geckodriver 0.21.0
+1534591331152	geckodriver	INFO	Listening on 127.0.0.1:39903
+1534591332139	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.fu9r1ofTvVud"
+1534591334194	Marionette	INFO	Listening on port 33157
+1534591334259	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1534591408753	geckodriver	INFO	geckodriver 0.21.0
+1534591408756	geckodriver	INFO	Listening on 127.0.0.1:46817
+1534591409758	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.EQFy0fv2vlga"
+1534591411505	Marionette	INFO	Listening on port 46851
+1534591411568	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1534591494737	geckodriver	INFO	geckodriver 0.21.0
+1534591494740	geckodriver	INFO	Listening on 127.0.0.1:47005
+1534591495749	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.ZAcZMi9YmBiA"
+1534591497265	Marionette	INFO	Listening on port 40909
+1534591497355	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1534591591847	geckodriver	INFO	geckodriver 0.21.0
+1534591591851	geckodriver	INFO	Listening on 127.0.0.1:53367
+1534591592853	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.LrRhLgiEBcAl"
+1534591594468	Marionette	INFO	Listening on port 39115
+1534591594568	Marionette	WARN	TLS certificate errors will be ignored for this session
+*** UTM:SVC TimerManager:registerTimer called after profile-before-change notification. Ignoring timer registration for id: telemetry_modules_ping
+1534591630365	geckodriver	INFO	geckodriver 0.21.0
+1534591630376	geckodriver	INFO	Listening on 127.0.0.1:56175
+1534591631377	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.QEQqQpGNU2sq"
+1534591632996	Marionette	INFO	Listening on port 41481
+1534591633101	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1534592116375	geckodriver	INFO	geckodriver 0.21.0
+1534592116396	geckodriver	INFO	Listening on 127.0.0.1:35025
+1534592117387	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.vg1bh006rson"
+1534592119149	Marionette	INFO	Listening on port 46407
+1534592119207	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+
+###!!! [Child][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+[Parent 17507, Gecko_IOThread] WARNING: pipe error (60): Connection reset by peer: file /build/firefox-mWstsA/firefox-61.0.1+build1/ipc/chromium/src/chrome/common/ipc_channel_posix.cc, line 353
+1534595086972	geckodriver	INFO	geckodriver 0.21.0
+1534595086984	geckodriver	INFO	Listening on 127.0.0.1:36031
+1534595087991	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.6IRntN9ZbmUG"
+1534595089430	Marionette	INFO	Listening on port 40429
+1534595089509	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.

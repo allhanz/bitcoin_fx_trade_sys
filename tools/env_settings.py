@@ -1,14 +1,16 @@
 import sys
 import os
 
+current_file_path=os.path.dirname(os.path.abspath(__file__))
+
 #gmail api_key
-auth_root_path="../../auth_info"
+auth_root_path=current_file_path+"/../../auth_info"
 gmail_file=auth_root_path+"/gmail_account.xlsx"
 bitflyer_api_file=auth_root_path+"/bitflyer_account.xlsx"
 quandl_api_file=auth_root_path+"/quandl_account.xlsx"
 
 #data
-common_data_root_path="../common_data"
+common_data_root_path=current_file_path+"/../common_data"
 
 chat_msg_data_root_path=common_data_root_path+"/chat_msg_data"
 bitflyer_chat_msg_path=chat_msg_data_root_path+"/bitflyer"
@@ -21,13 +23,12 @@ stock_data_root_path=common_data_root_path+"/stock_data"
 oil_data_path=common_data_root_path+"/oil_daily_data"
 gold_data_path=common_data_root_path+"/gold_daily_data"
 
-
 #account
 account_balance_data_root_path=common_data_root_path+"/balance_daily"
 bitflyer_account_balance_path=account_balance_data_root_path+"/bitflyer"
 
 
-currency_list_file="./currency_list.xlsx"
+currency_list_file=current_file_path+"/currency_list.xlsx"
 
 #fx data 
 fx_data_root_path=common_data_root_path+"/fx_data"
