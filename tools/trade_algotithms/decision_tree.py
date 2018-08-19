@@ -26,7 +26,7 @@ def entroy_model():
 ##训练模型
 def model_train(model_obj,x_train,y_train):
     model_obj.fit(x_train,y_train)
-    return model
+    return model_obj
 
 def trade_process():
     # 计算调仓数量

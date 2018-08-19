@@ -68,6 +68,7 @@ def get_and_save_element_screen_shoot(driver,element_obj,img_file_name):
     bottom = location['y'] + size['height']
     im = im.crop((left, top, right, bottom)) # defines crop points
     im.save(img_file_name) # saves new cropped image
+    print("candele png file {} is saved....".format(img_file_name))
 
 def main():
     print("not tested....")
@@ -96,6 +97,7 @@ def main():
             get_and_save_element_screen_shoot(driver,element_obj,png_file_name)
         except:
             print("waiting for a minute and try again....")
+            time.sleep(10)
             pass
         end_time=time.time()
         spend_time=end_time-start_time  

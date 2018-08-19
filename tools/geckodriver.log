@@ -305,3 +305,15 @@ JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch res
 1534675707663	Marionette	INFO	Listening on port 39421
 1534675707771	Marionette	WARN	TLS certificate errors will be ignored for this session
 JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1534676541582	geckodriver	INFO	geckodriver 0.21.0
+1534676541596	geckodriver	INFO	Listening on 127.0.0.1:46089
+1534676542593	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.zxCFd0nfIRQz"
+1534676543828	Marionette	INFO	Listening on port 36901
+1534676543910	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
