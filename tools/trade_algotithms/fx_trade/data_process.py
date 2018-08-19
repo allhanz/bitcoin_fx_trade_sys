@@ -51,11 +51,13 @@ def save_to_database(collection_obj,json_list):
                     upsert=False
                     )
                 """
-                print("find the duplicated id, pass.....")
-                pass    
+                #print("find the duplicated id, pass.....")
+                pass
 
 
 def main():
+    #get the kill problem, but nit solved....
+
     fx_data_path=env.fx_data_root_path
     print("path:",fx_data_path)
     csv_file_list=get_fx_csv_file(fx_data_path)
@@ -71,7 +73,7 @@ def main():
         #delete the data to save the space
         del pd_data,json_list
         #exit()
-    print("not tested....")
+    
 
 if __name__=="__main__":
     main()

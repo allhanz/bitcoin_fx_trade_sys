@@ -11,13 +11,13 @@ from hdfs import InsecureClient
 def hash_sha512(str_data):
     hash_object = hashlib.sha512(str_data.encode("utf-8"))
     hex_dig = hash_object.hexdigest()
-    print("hex_dig:",hex_dig)
+    #print("hex_dig:",hex_dig)
     return hex_dig
 
 def hash_sha256(str_data):
     hash_object = hashlib.sha256(str_data.encode("utf-8"))
     hex_dig = hash_object.hexdigest()
-    print("hex_dig:",hex_dig)
+    #print("hex_dig:",hex_dig)
     return hex_dig
 
 def convert_pd_to_jsonList(pd_data):

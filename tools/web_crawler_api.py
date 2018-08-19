@@ -17,7 +17,7 @@ import random
 import hashlib
 from PIL import Image
 from io import BytesIO
-
+import env_settings as env
 #OverflowError: MongoDB can only handle up to 8-byte ints
 """
 Size of long long types is 8 bytes
@@ -26,12 +26,9 @@ Unsigned long long min: 0 max: 18446744073709551615
 """
 MAX_RANGE=10**10
 
-phantomJS_path="/usr/local/bin/phantomjs" # please set the path
-firefox_webdriver_path="/home/hanz/firefox_webdriver/geckodriver"
-
-driver=webdriver.PhantomJS(executable_path=phantomJS_path)
+driver=webdriver.PhantomJS(executable_path=env.phantomJS_path)
 wait=WebDriverWait(driver,3)
-#firefox_driver=webdriver.Firefox(executable_path=firefox_webdriver_path)
+#firefox_driver=webdriver.Firefox(executable_path=env.firefox_webdriver_path)
 
 data_format={
     "_id":None,
@@ -45,7 +42,7 @@ data_format={
 }
 
 def get_canvs_to_png(canvs_ele):
-    
+
 def get_screen_shot_and_save(img_ele,driver):
     location = img_ele.location
     size = img_ele.size

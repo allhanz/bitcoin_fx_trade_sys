@@ -15,6 +15,7 @@ import concurrent.futures
 import pymongo
 import random
 import hashlib
+import env_settings as env
 
 #OverflowError: MongoDB can only handle up to 8-byte ints
 """
@@ -23,9 +24,6 @@ Signed long long min: -9223372036854775808 max: 9223372036854775807
 Unsigned long long min: 0 max: 18446744073709551615
 """
 MAX_RANGE=10**10
-
-phantomJS_path="/usr/local/bin/phantomjs" # please set the path
-firefox_webdriver_path="/home/hanz/firefox_webdriver/geckodriver"
 
 data_format={
     "_id":None,
@@ -112,9 +110,9 @@ def check_data_downloaed():
 def main():
     target_text=""
     url="https://www.tradingview.com/chart/K3RNn4xr/"
-    phantomJS_driver=webdriver.PhantomJS(executable_path=phantomJS_path)
+    phantomJS_driver=webdriver.PhantomJS(executable_path=env.phantomJS_path)
     
-    firefox_driver=webdriver.Firefox(executable_path=firefox_webdriver_path)
+    firefox_driver=webdriver.Firefox(executable_path=env.firefox_webdriver_path)
     driver=firefox_driver
     driver.get(url) #phantomjs
     
