@@ -61,6 +61,11 @@ japanese_stopword_file=stopwords_data_path+"/english/jp_stopwords.csv"
 
 nlp_test_file=common_data_root_path+"/nlp_test_words.txt"
 
+#bitcoin data
+bitcoin_data_root_path=common_data_root_path+"/bitcoin_data"
+
+#picture data path
+bitcoin_candle_pic_root_path=bitcoin_data_root_path+"/candles_pics"
 
 
 

@@ -252,3 +252,56 @@ JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch res
 JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
 JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
 JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1534674154948	geckodriver	INFO	geckodriver 0.21.0
+1534674154956	geckodriver	INFO	Listening on 127.0.0.1:38827
+1534674155959	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.lwXpt92EuiU5"
+1534674158381	Marionette	INFO	Listening on port 45249
+1534674158511	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: resource://devtools/shared/base-loader.js -> resource://devtools/client/framework/toolbox.js, line 1266: TypeError: currentPanel is undefined
+1534674286272	geckodriver	INFO	geckodriver 0.21.0
+1534674286276	geckodriver	INFO	Listening on 127.0.0.1:51721
+1534674287279	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.UDpoNlLOKVqN"
+1534674289198	Marionette	INFO	Listening on port 41227
+1534674289289	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+[Parent 24054, Gecko_IOThread] WARNING: pipe error (65): Connection reset by peer: file /build/firefox-mWstsA/firefox-61.0.1+build1/ipc/chromium/src/chrome/common/ipc_channel_posix.cc, line 353
+1534674974299	geckodriver	INFO	geckodriver 0.21.0
+1534674974306	geckodriver	INFO	Listening on 127.0.0.1:44107
+1534674975302	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.zKkf7lgIvwRa"
+1534674976749	Marionette	INFO	Listening on port 41157
+1534674976811	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: resource://devtools/shared/base-loader.js -> resource://devtools/client/framework/toolbox.js, line 1266: TypeError: currentPanel is undefined
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1534675383942	geckodriver	INFO	geckodriver 0.21.0
+1534675383948	geckodriver	INFO	Listening on 127.0.0.1:60045
+1534675384945	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.VjDrldN1foo9"
+1534675386699	Marionette	INFO	Listening on port 32919
+1534675386757	Marionette	WARN	TLS certificate errors will be ignored for this session
+1534675398594	geckodriver	INFO	geckodriver 0.21.0
+1534675398611	geckodriver	INFO	Listening on 127.0.0.1:41361
+1534675399606	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.CVROsm8T4WWg"
+1534675401419	Marionette	INFO	Listening on port 41573
+1534675401516	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+[Parent 25514, Gecko_IOThread] WARNING: pipe error (60): Connection reset by peer: file /build/firefox-mWstsA/firefox-61.0.1+build1/ipc/chromium/src/chrome/common/ipc_channel_posix.cc, line 353
+1534675501490	geckodriver	INFO	geckodriver 0.21.0
+1534675501499	geckodriver	INFO	Listening on 127.0.0.1:38031
+1534675502501	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.X9dUh7B1UQqb"
+1534675503892	Marionette	INFO	Listening on port 39993
+1534675503932	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+[GFX1-]: Receive IPC close with reason=AbnormalShutdown
+[Child 26258, Chrome_ChildThread] WARNING: pipe error (3): Connection reset by peer: file /build/firefox-mWstsA/firefox-61.0.1+build1/ipc/chromium/src/chrome/common/ipc_channel_posix.cc, line 353
+1534675705044	geckodriver	INFO	geckodriver 0.21.0
+1534675705049	geckodriver	INFO	Listening on 127.0.0.1:33259
+1534675706049	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile.rdANmW3frteY"
+1534675707663	Marionette	INFO	Listening on port 39421
+1534675707771	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.

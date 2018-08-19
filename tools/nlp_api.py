@@ -33,8 +33,9 @@ def data_clean(str_data):
     return str_data
 
 def remove_stop_words(str_data): #stopwords have no meaning in sentences
-    jp_stopwords=list(pd.read_csv(env.japanese_stopword_file,encoding="utf-8").values)
-    en_stopwords=list(pd.read_csv(env.english_stopword_file,encoding="utf-8").values)
+    jp_stopwords=list(set(pd.read_csv(env.japanese_stopword_file,encoding="utf-8").values))
+    en_stopwords=list(set(pd.read_csv(env.english_stopword_file,encoding="utf-8").values))
+    
     for item in jp_stopwords:
         if item in str_data:
             str_data=str_data.replace(item,"")
