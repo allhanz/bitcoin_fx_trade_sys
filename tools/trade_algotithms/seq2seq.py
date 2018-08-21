@@ -24,7 +24,8 @@ def attentin_model(input_dim,hidden_dim,output_length,output_dim,depth):
     #model = AttentionSeq2Seq(input_dim=5, input_length=7, hidden_dim=10, output_length=8, output_dim=20, depth=4)
     model = AttentionSeq2Seq(input_dim=5, input_length=7, hidden_dim=10, output_length=8, output_dim=20, depth=4)
     model.compile(loss='mse', optimizer='rmsprop')
-
+    return model
+    
 def main():
     print("not test...")
 

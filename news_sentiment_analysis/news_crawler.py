@@ -40,6 +40,7 @@ def test():
         print("-"*60)
 
 def main():
+    print("not tested....")
     newspaper_test(url)
 
 if __name__=="__main__":

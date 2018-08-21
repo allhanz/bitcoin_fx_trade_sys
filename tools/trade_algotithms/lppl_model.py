@@ -178,6 +178,7 @@ class Population:
     random.seed()
 
 def main():
+    print("not tested.....")
     limits = ([8.4, 8.8], [-1, -0.1], [350, 400], [.1,.9], [-1,1], [12,18], [0, 2*np.pi])
     x = Population(limits, 20, 0.3, 1.5, .05, 4)
     for i in range (2):

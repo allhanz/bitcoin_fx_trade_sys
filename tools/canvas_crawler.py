@@ -70,34 +70,38 @@ def get_and_save_element_screen_shoot(driver,element_obj,img_file_name):
     im.save(img_file_name) # saves new cropped image
     print("candele png file {} is saved....".format(img_file_name))
 
+def load_url(url):
+    driver=webdriver.Firefox(executable_path=env.firefox_webdriver_path)
+    driver.get(url)
+    driver.maximize_window()
+    return driver
+
 def main():
     print("not tested....")
     delta_time=60*5 #5 minutes interval
     url="https://www.tradingview.com/chart/K3RNn4xr/" # please set 5 minutes interval in your own page in tradeview website
-
     phantomJS_driver=webdriver.PhantomJS(executable_path=env.phantomJS_path)
-    
-    firefox_driver=webdriver.Firefox(executable_path=env.firefox_webdriver_path)
-    driver=firefox_driver
-    driver.maximize_window()
-    driver.get(url) #phantomjs
+    driver=load_url(url)
+    #driver=phantomJS_driver
     #target_xpath="/html/body/div[1]/div[1]/div/div[1]/div[2]/table/tbody"
     target_xpath="/html/body/div[1]/div[1]/div/div[1]/div/table/tbody"
     
-
-
     while(True):
         start_time=time.time()
+        driver.refresh()
         now_date=datetime.now()
-        element_obj=driver.find_element_by_xpath(target_xpath)
-        #waiting for loading finihsed
         time.sleep(5)
         png_file_name=env.bitcoin_candle_pic_root_path+"/fx_bitcoin_price_"+now_date.strftime("%Y-%m-%dT%H:%M:%S")+".png"
         try:
+            element_obj=driver.find_element_by_xpath(target_xpath)
+            #waiting for loading finihsed
+            time.sleep(5)
             get_and_save_element_screen_shoot(driver,element_obj,png_file_name)
         except:
             print("waiting for a minute and try again....")
+            driver.close()
             time.sleep(10)
+            driver=load_url(url)
             pass
         end_time=time.time()
         spend_time=end_time-start_time  
