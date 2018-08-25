@@ -18,6 +18,8 @@ import hashlib
 from PIL import Image
 from io import BytesIO
 import env_settings as env
+import redis_datatabase_api
+
 #OverflowError: MongoDB can only handle up to 8-byte ints
 """
 Size of long long types is 8 bytes
@@ -26,9 +28,6 @@ Unsigned long long min: 0 max: 18446744073709551615
 """
 MAX_RANGE=10**10
 
-driver=webdriver.PhantomJS(executable_path=env.phantomJS_path)
-wait=WebDriverWait(driver,3)
-#firefox_driver=webdriver.Firefox(executable_path=env.firefox_webdriver_path)
 
 data_format={
     "_id":None,
@@ -41,7 +40,6 @@ data_format={
     "trade_vol":None
 }
 
-def get_canvs_to_png(canvs_ele):
 
 def get_screen_shot_and_save(img_ele,driver):
     location = img_ele.location
@@ -65,6 +63,11 @@ def hash_sha256(str_data):
     hash_object = hashlib.sha256(str_data.encode("utf-8"))
     hex_dig = hash_object.hexdigest()
     return hex_dig
+
+def driver_rebuild(url):
+    driver=webdriver.PhantomJS(executable_path=env.phantomJS_path)
+    driver.get(url)
+    return driver
 
 #def get_realtime_price(url):
 def get_realtime_price(driver):
@@ -124,27 +127,81 @@ def check_data_downloaed():
     print("inserted_data:\n",inserted_data)
     return inserted_data
 
+def check_same_val(data_list,thredhold_val,check_key):
+    sam_flag=False
+    sam_count=0
+    if not data_list:
+        return sam_flag
+
+    if check_key not in data_list[0].keys():
+        print("please check the key name {} again in data...".format(check_key))
+        return
+    else:
+        check_val=data_list[0][check_key]
+    for item in data_list[1:]:
+        if check_val==item[check_key]:
+            sam_count=sam_count+1
+        
+    if sam_count>=thredhold_val:
+        sam_flag=True
+    return sam_flag
+
 def main():
     url="https://cc.minkabu.jp/pair/BTC_JPY"
+    driver=webdriver.PhantomJS(executable_path=env.phantomJS_path)
+    wait=WebDriverWait(driver,3)
+    #firefox_driver=webdriver.Firefox(executable_path=env.firefox_webdriver_path)
     driver.get(url) #phantomjs
     delta_time=1 #unit second
     collection=build_bitcoin_database("bitcoin_db","price_collection")
     collection.create_index([("index", pymongo.DESCENDING)])
     executor = concurrent.futures.ProcessPoolExecutor(max_workers=2)
+    check_data_list=[]
+    check_len=20
+    thredhold_val=10
+    r=redis_datatabase_api.build_realtime_db()
+    redis_id_prefix="fx_price_"
+    scan_ptn="fx_price*"
+    today_now=int(datetime.now().strftime("%Y%m%d"))
+    #for redis database insert test -> OK
+    #redis_datatabase_api.fx_insert_multi_kv(r,redis_id_prefix,scan_ptn,{"a":3})
 
     while(True):
         start_time=time.time()
+        today_next=int(datetime.now().strftime("%Y%m%d"))
+        if today_next>today_now:
+            today_now=today_next
+            redis_datatabase_api.delete_data_by_ptn(r,scan_ptn)
+        if len(check_data_list)==check_len:
+            check_data_list=[]
+
         try:
+            
             data=get_realtime_price(driver)
             print("data:",data)
+            redis_datatabase_api.fx_insert_multi_kv(r,redis_id_prefix,scan_ptn,data)
+            check_data_list.append(data)
             res=collection.insert_one(data)
             #res=executor.submit(collection.insert_one,data)
+            
             if not res:
             #if not res.result:
                 print("insert data error....")
+
+
         except:
             print("waiting for a minute and try again....")
+            driver.close()
+            driver=driver_rebuild(url)
             pass
+        """
+        sam_flag=check_same_val(check_data_list,thredhold_val,"buy_price")
+        if sam_flag:
+            print("the page of url in browser not updated. reopen it....")
+            driver.close()
+            driver=driver_rebuild(url)
+            #break
+        """
         end_time=time.time()
         spend_time=end_time-start_time  
         if delta_time-spend_time>=0:
