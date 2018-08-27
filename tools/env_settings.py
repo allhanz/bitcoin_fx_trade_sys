@@ -67,6 +67,9 @@ bitcoin_data_root_path=common_data_root_path+"/bitcoin_data"
 #picture data path
 bitcoin_candle_pic_root_path=bitcoin_data_root_path+"/candles_pics"
 
+#redis
+db_path="/var/lib/redis"
+dump_file_path=db_path+"/dump.rdb"
 
 
 

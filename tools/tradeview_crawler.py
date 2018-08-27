@@ -96,7 +96,6 @@ def build_bitcoin_database(db_name,collection_name):
     database=mongodb_api.build_one_database(db_name,None,None)
     collection=mongodb_api.build_one_collection(database,collection_name)
     #document=mongodb_api.build_one_document(collection,collection_name)
-
     return collection
 
 def check_data_downloaed():

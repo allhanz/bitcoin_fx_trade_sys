@@ -116,7 +116,6 @@ def build_bitcoin_database(db_name,collection_name):
     database=mongodb_api.build_one_database(db_name,None,None)
     collection=mongodb_api.build_one_collection(database,collection_name)
     #document=mongodb_api.build_one_document(collection,collection_name)
-
     return collection
 
 def check_data_downloaed():
@@ -160,12 +159,12 @@ def main():
     check_len=20
     thredhold_val=10
     r=redis_datatabase_api.build_realtime_db()
-    redis_id_prefix="fx_price_"
-    scan_ptn="fx_price*"
+    redis_id_prefix="bitflyer_bitcoin_price_"
+    scan_ptn="bitflyer_bitcoin_price_[0-9]*"
     today_now=int(datetime.now().strftime("%Y%m%d"))
     #for redis database insert test -> OK
     #redis_datatabase_api.fx_insert_multi_kv(r,redis_id_prefix,scan_ptn,{"a":3})
-
+    #flag=redis_datatabase_api.pickle_insert(r,redis_id_prefix,scan_ptn,{"a":2})
     while(True):
         start_time=time.time()
         today_next=int(datetime.now().strftime("%Y%m%d"))
@@ -179,7 +178,9 @@ def main():
             
             data=get_realtime_price(driver)
             print("data:",data)
-            redis_datatabase_api.fx_insert_multi_kv(r,redis_id_prefix,scan_ptn,data)
+            flag=redis_datatabase_api.pickle_insert(r,redis_id_prefix,scan_ptn,data)
+            if not flag:
+                print("redis data insert failed......")
             check_data_list.append(data)
             res=collection.insert_one(data)
             #res=executor.submit(collection.insert_one,data)

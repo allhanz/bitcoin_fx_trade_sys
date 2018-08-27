@@ -5,6 +5,10 @@ import seq2seq
 from seq2seq.models import AttentionSeq2Seq
 from seq2seq.models import Seq2Seq
 from seq2seq.models import SimpleSeq2Seq
+sys.path.append(os.path.abspath("../"))
+import env_settings as env
+import redis_datatabase_api
+
 # website
 #https://github.com/farizrahman4u/seq2seq.git
 

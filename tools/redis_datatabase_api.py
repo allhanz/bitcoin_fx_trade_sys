@@ -5,12 +5,73 @@ import mongodb_api
 import pickle
 import re
 import data_process_lib
+from rdbtools import RdbParser, RdbCallback
+from rdbtools.encodehelpers import bytes_to_unicode
+import env_settings as env
+import shutil
 
-def mongodb_to_redis():
-    print("not finished...")
+def get_bitflyer_data(r):
+    data_list=get_data_by_ptn(r,"bitflyer_bitcoin_price_[0-9]*")
+    if len(data_list)>0:
+        return data_list
+
+def get_fx_data(r):
+    data_list=get_data_by_ptn(r,"fx_price_[0-9]*")
+    if len(data_list)>0:
+        return data_list
+
+def mv_redis_db_file(r,dist_file):
+    r.save()
+    dump_file=env.dump_file_path
+    if os.path.exists(dump_file):
+        shutil.move(dump_file,dist_file)
+    else:
+        print("redis db file not found....")
+
+def get_data_by_ptn(r,key_ptn):
+    #KEYS pattern Supports glob-style patterns:
+    id_list=r.keys(key_ptn)
+    data_list=[]
+    if len(id_list)==0:
+        return 
+    for item in id_list:
+        item_str=item.decode()
+        data=pickle.loads(r.get(item_str))
+        data_list.append(data)
+    return data_list
+
+def delete_all_data(r):
+    return r.flushall()
+
+def save_all_data(r):
+    return r.save()
+
+def get_redis_config_info(r):
+    return r.config_get()
+
+def pickle_insert(r,redis_id_prefix,scan_ptn,json_data):
+    if not isinstance(json_data,dict):
+        return
+    pickle_str=pickle.dumps(json_data)
+    id_list=r.keys(scan_ptn)
+    index_start=len(id_list)
+    print("length of the key {}:{}".format(scan_ptn,index_start))
+    res=r.set(redis_id_prefix+str(index_start+1),pickle_str)
+    return res
+
     
-def redis_to_mongodb():
-    print("not finished..")
+def redis_db_to_mongodb(r,mongodb_collection,redis_key_ptn):
+    id_list=r.keys(redis_key_ptn)
+    data_list=[]
+    
+    if len(id_list)==0:
+        return
+    for item in id_list:
+        item_str=item.decode()
+        data=pickle.loads(r.get(item_str))
+        #data_list.append(data)
+        mongodb_collection.insert_one(data)
+
 
 def build_redis_db(db_index):
     if db_index=="" or db_index==None:
@@ -39,6 +100,8 @@ def hash_set_multi_kv(r,redis_id,kv_data):
     res=r.hmset(redis_id,kv_data)
     print("res:",res)
     return res
+
+
 
 def fx_insert_multi_kv(r,redis_id_prefix,scan_ptn,kv_data):
     if redis_id_prefix=="" or redis_id_prefix==None:
@@ -129,6 +192,7 @@ def get_bitcoin_all_data(r,scan_ptn):
         info_list.append(res)
     if len(info_list)>0:
         return info_list
+
 def delete_data_by_key(r,key_name):
     res=r.delete(key_name)
     return res
