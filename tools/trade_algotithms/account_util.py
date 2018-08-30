@@ -1,8 +1,10 @@
 import os
 import sys
+sys.path.append(os.path.abspath("../"))
 import pandas as pd
 import random
 from datetime import datetime
+
 
 class account_info:
     def __init__(self):
@@ -36,9 +38,9 @@ class account_info:
             return False
 
     def buy(self,trade_unit):
-        if trade_noise_sim():
+        if self.trade_noise_sim():
             price_vol=trade_unit*self.current_price
-            if check_account_balance(trade_unit,self.current_price):
+            if self.check_account_balance(trade_unit,self.current_price):
                 self.balance=self.balance-price_vol
                 self.coin_no=self.coin_no-trade_unit
                 self.all_rate=(self.coin_no*self.current_price-self.init_blac)/self.init_blac
@@ -55,8 +57,7 @@ class account_info:
             print("cannot trading......")
     
     def sell(self,trade_unit):
-        flag=trade_noise_sim(self)
-        if flag:
+        if self.trade_noise_sim():
 
             #previous_blance=self.balance
             price_vol=trade_unit*self.current_price
@@ -79,9 +80,9 @@ class account_info:
         #signal_rate :-1.00~1.00
         trade_unit=self.trade_factor*signal_rate
         if trade_unit>2:
-            buy(self,trade_unit)
+            self.buy(trade_unit)
         elif trade_unit<-2:
-            sell(self,-trade_unit)
+            self.sell(-trade_unit)
         else:
             print("hold........")
 
@@ -91,3 +92,11 @@ class account_info:
             return True
         else:
             return False
+
+
+
+def main():
+    pass
+
+if __name__=="__main__":
+    main()

@@ -9,6 +9,8 @@ from rdbtools import RdbParser, RdbCallback
 from rdbtools.encodehelpers import bytes_to_unicode
 import env_settings as env
 import shutil
+import time
+import pandas as pd
 
 def get_bitflyer_data(r):
     data_list=get_data_by_ptn(r,"bitflyer_bitcoin_price_[0-9]*")
@@ -20,13 +22,17 @@ def get_fx_data(r):
     if len(data_list)>0:
         return data_list
 
-def mv_redis_db_file(r,dist_file):
+def mv_redis_db_file(r,dist_dir):
     r.save()
     dump_file=env.dump_file_path
     if os.path.exists(dump_file):
-        shutil.move(dump_file,dist_file)
+        shutil.copy(dump_file,dist_dir)
     else:
         print("redis db file not found....")
+    while(not os.path.exists(dist_dir)):
+        time.sleep(1)
+        print("file {} is copying.....".format(dist_dir))
+
 
 def get_data_by_ptn(r,key_ptn):
     #KEYS pattern Supports glob-style patterns:
@@ -60,6 +66,14 @@ def pickle_insert(r,redis_id_prefix,scan_ptn,json_data):
     return res
 
     
+def pickle_insert_by_id(r,redis_id,json_data):
+    if not isinstance(json_data,dict):
+        return
+    pickle_str=pickle.dumps(json_data)
+    print("redis_id",redis_id)
+    res=r.set(redis_id,pickle_str)
+    return res
+
 def redis_db_to_mongodb(r,mongodb_collection,redis_key_ptn):
     id_list=r.keys(redis_key_ptn)
     data_list=[]
@@ -78,7 +92,6 @@ def build_redis_db(db_index):
         db_index=0
     pool = redis.ConnectionPool(host='localhost', port=6379, db=db_index)
     r = redis.Redis(connection_pool=pool)
-    r.scan()
     return r
 
 def set_one_kv(r,kv_data):
@@ -100,8 +113,6 @@ def hash_set_multi_kv(r,redis_id,kv_data):
     res=r.hmset(redis_id,kv_data)
     print("res:",res)
     return res
-
-
 
 def fx_insert_multi_kv(r,redis_id_prefix,scan_ptn,kv_data):
     if redis_id_prefix=="" or redis_id_prefix==None:
@@ -179,18 +190,25 @@ def get_fx_all_data(r,scan_ptn):
     if len(info_list)>0:
         return info_list
 
-def get_bitcoin_all_data(r,scan_ptn):
+def get_all_data_by_ptn(r,scan_ptn):
     info_list=[]
     if scan_ptn=="" or scan_ptn==None:
         scan_ptn="bitcoin_price_*"
-    scan_dict=scan_match(r,scan_ptn)
-    if len(scan_dict.values()):
-        return 
-
-    for id in scan_dict["id_list"]:
-        res=hash_get_multi_all(r,id)
-        info_list.append(res)
+    key_id_list=r.keys(scan_ptn)
+    key_id_list=[ i.decode() for i in key_id_list ]
+    for id in key_id_list:
+        res=r.get(id)
+        json_data=pickle.loads(res)
+        info_list.append(json_data)
     if len(info_list)>0:
+        try:
+            pd_data=pd.DataFrame(info_list)
+            print("data type pandas dataframe....")
+            return pd_data
+        except:
+            print("data error....")
+            pass
+        print("data type list json")
         return info_list
 
 def delete_data_by_key(r,key_name):

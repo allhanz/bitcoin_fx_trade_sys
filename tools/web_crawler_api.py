@@ -19,6 +19,7 @@ from PIL import Image
 from io import BytesIO
 import env_settings as env
 import redis_datatabase_api
+import shutil
 
 #OverflowError: MongoDB can only handle up to 8-byte ints
 """
@@ -165,10 +166,16 @@ def main():
     #for redis database insert test -> OK
     #redis_datatabase_api.fx_insert_multi_kv(r,redis_id_prefix,scan_ptn,{"a":3})
     #flag=redis_datatabase_api.pickle_insert(r,redis_id_prefix,scan_ptn,{"a":2})
+    index=0
+    redis_datatabase_api.delete_data_by_ptn(r,scan_ptn)
     while(True):
         start_time=time.time()
         today_next=int(datetime.now().strftime("%Y%m%d"))
         if today_next>today_now:
+            new_redis_file=env.redis_his_root_path+"/dump_"+str(today_now)+".rdp"
+            old_redis_file=env.redis_his_root_path+"/dump.rdp"
+            redis_datatabase_api.mv_redis_db_file(r,env.redis_his_root_path)
+            os.rename(old_redis_file,new_redis_file)
             today_now=today_next
             redis_datatabase_api.delete_data_by_ptn(r,scan_ptn)
         if len(check_data_list)==check_len:
@@ -178,7 +185,8 @@ def main():
             
             data=get_realtime_price(driver)
             print("data:",data)
-            flag=redis_datatabase_api.pickle_insert(r,redis_id_prefix,scan_ptn,data)
+            redis_id=redis_id_prefix+str(index)
+            flag=redis_datatabase_api.pickle_insert_by_id(r,redis_id,data)
             if not flag:
                 print("redis data insert failed......")
             check_data_list.append(data)
@@ -207,6 +215,7 @@ def main():
         spend_time=end_time-start_time  
         if delta_time-spend_time>=0:
             time.sleep(delta_time-spend_time)
+            index=index+1
 
 if __name__=="__main__":
     main()
