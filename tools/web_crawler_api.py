@@ -168,13 +168,21 @@ def main():
     #flag=redis_datatabase_api.pickle_insert(r,redis_id_prefix,scan_ptn,{"a":2})
     index=0
     redis_datatabase_api.delete_data_by_ptn(r,scan_ptn)
+    #for test
+    """
+    new_redis_file=env.redis_daily_data_path+"/dump_"+str(today_now)+".rdb"
+    old_redis_file=env.redis_daily_data_path+"/dump.rdb"
+    redis_datatabase_api.mv_redis_db_file(r,env.redis_daily_data_path)
+    os.rename(old_redis_file,new_redis_file)
+    exit()
+    """
     while(True):
         start_time=time.time()
         today_next=int(datetime.now().strftime("%Y%m%d"))
         if today_next>today_now:
-            new_redis_file=env.redis_his_root_path+"/dump_"+str(today_now)+".rdp"
-            old_redis_file=env.redis_his_root_path+"/dump.rdp"
-            redis_datatabase_api.mv_redis_db_file(r,env.redis_his_root_path)
+            new_redis_file=env.redis_daily_data_path+"/dump_"+str(today_now)+".rdb"
+            old_redis_file=env.redis_daily_data_path+"/dump.rdb"
+            redis_datatabase_api.mv_redis_db_file(r,env.redis_daily_data_path)
             os.rename(old_redis_file,new_redis_file)
             today_now=today_next
             redis_datatabase_api.delete_data_by_ptn(r,scan_ptn)

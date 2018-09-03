@@ -1,6 +1,6 @@
 #this tool is used for downloading the bitcoin price data from different trader server
 # the website change very frequency
-
+#use the bitflyer api
 import sys
 import os
 import numpy as np
