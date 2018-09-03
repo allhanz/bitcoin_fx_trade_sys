@@ -4,7 +4,13 @@ aggregating positions held by a user across multiple accounts. See demo.py
 for executing a demonstration of this code.
 '''
 
-import httplib, json
+import httplib
+import json
+import env_settings as env
+
+def read_onada_key_token():
+    key="b2aa44b8e9a8c723097aa05c84f0e6ae-867bd81043a7928fad38c5b53e0d548b"
+    return key
 
 def sandbox_request(method, uri, body=None):
     ''' 
