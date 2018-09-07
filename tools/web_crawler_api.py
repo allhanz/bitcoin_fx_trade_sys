@@ -163,6 +163,7 @@ def main():
     redis_id_prefix="bitflyer_bitcoin_price_"
     scan_ptn="bitflyer_bitcoin_price_[0-9]*"
     today_now=int(datetime.now().strftime("%Y%m%d"))
+    
     #for redis database insert test -> OK
     #redis_datatabase_api.fx_insert_multi_kv(r,redis_id_prefix,scan_ptn,{"a":3})
     #flag=redis_datatabase_api.pickle_insert(r,redis_id_prefix,scan_ptn,{"a":2})
@@ -176,54 +177,66 @@ def main():
     os.rename(old_redis_file,new_redis_file)
     exit()
     """
-    while(True):
-        start_time=time.time()
-        today_next=int(datetime.now().strftime("%Y%m%d"))
-        if today_next>today_now:
-            new_redis_file=env.redis_daily_data_path+"/dump_"+str(today_now)+".rdb"
-            old_redis_file=env.redis_daily_data_path+"/dump.rdb"
-            redis_datatabase_api.mv_redis_db_file(r,env.redis_daily_data_path)
-            os.rename(old_redis_file,new_redis_file)
-            today_now=today_next
-            redis_datatabase_api.delete_data_by_ptn(r,scan_ptn)
-        if len(check_data_list)==check_len:
-            check_data_list=[]
+    try:
+        while(True):
+            start_time=time.time()
+            #today_next=20180906
+            today_next=int(datetime.now().strftime("%Y%m%d"))
+            print("today_next:",today_next)
+            print("today_now:",today_now)
+            if today_next>today_now:
+                new_redis_file=env.redis_daily_data_path+"/dump_"+str(today_now)+".rdb"
+                old_redis_file=env.redis_daily_data_path+"/dump.rdb"
+                redis_datatabase_api.mv_redis_db_file(r,env.redis_daily_data_path)
+                os.rename(old_redis_file,new_redis_file)
+                today_now=today_next
+                print("today_now:",today_now)
+                redis_datatabase_api.delete_data_by_ptn(r,scan_ptn)
 
-        try:
-            
-            data=get_realtime_price(driver)
-            print("data:",data)
-            redis_id=redis_id_prefix+str(index)
-            flag=redis_datatabase_api.pickle_insert_by_id(r,redis_id,data)
-            if not flag:
-                print("redis data insert failed......")
-            check_data_list.append(data)
-            res=collection.insert_one(data)
-            #res=executor.submit(collection.insert_one,data)
-            
-            if not res:
-            #if not res.result:
-                print("insert data error....")
+                #for test
+                #exit()
+            if len(check_data_list)==check_len:
+                check_data_list=[]
 
+            try:
+                
+                data=get_realtime_price(driver)
+                print("data:",data)
+                redis_id=redis_id_prefix+str(index)
+                flag=redis_datatabase_api.pickle_insert_by_id(r,redis_id,data)
+                if not flag:
+                    print("redis data insert failed......")
+                check_data_list.append(data)
+                res=collection.insert_one(data)
+                #res=executor.submit(collection.insert_one,data)
+                
+                if not res:
+                #if not res.result:
+                    print("insert data error....")
 
-        except:
-            print("waiting for a minute and try again....")
-            driver.close()
-            driver=driver_rebuild(url)
-            pass
-        """
-        sam_flag=check_same_val(check_data_list,thredhold_val,"buy_price")
-        if sam_flag:
-            print("the page of url in browser not updated. reopen it....")
-            driver.close()
-            driver=driver_rebuild(url)
-            #break
-        """
-        end_time=time.time()
-        spend_time=end_time-start_time  
-        if delta_time-spend_time>=0:
-            time.sleep(delta_time-spend_time)
-            index=index+1
+            except:
+                print("waiting for a minute and try again....")
+                driver.close()
+                driver=driver_rebuild(url)
+                #pass
+            """
+            sam_flag=check_same_val(check_data_list,thredhold_val,"buy_price")
+            if sam_flag:
+                print("the page of url in browser not updated. reopen it....")
+                driver.close()
+                driver=driver_rebuild(url)
+                #break
+            """
+            end_time=time.time()
+            spend_time=end_time-start_time  
+            if delta_time-spend_time>=0:
+                time.sleep(delta_time-spend_time)
+                index=index+1
+    except KeyboardInterrupt:
+        driver.close()
+        clear = lambda: os.system('cls')
+        print("clear the whole data.....")
+        clear()
 
 if __name__=="__main__":
     main()
