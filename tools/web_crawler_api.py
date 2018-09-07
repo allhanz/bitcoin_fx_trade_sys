@@ -192,7 +192,7 @@ def main():
                 today_now=today_next
                 print("today_now:",today_now)
                 redis_datatabase_api.delete_data_by_ptn(r,scan_ptn)
-
+                index=0
                 #for test
                 #exit()
             if len(check_data_list)==check_len:
