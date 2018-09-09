@@ -98,15 +98,6 @@ def run_mnist(first_input=784, last_output=10,
     mnist_evaluation = _mnist.mnist_evaluate()
     return mnist_evaluation
 
-# bounds for hyper-parameters in mnist model
-# the bounds dict should be in order of continuous type and then discrete type
-bounds = [{'name': 'validation_split', 'type': 'continuous',  'domain': (0.0, 0.3)},
-          {'name': 'l1_drop',          'type': 'continuous',  'domain': (0.0, 0.3)},
-          {'name': 'l2_drop',          'type': 'continuous',  'domain': (0.0, 0.3)},
-          {'name': 'l1_out',           'type': 'discrete',    'domain': (64, 128, 256, 512, 1024)},
-          {'name': 'l2_out',           'type': 'discrete',    'domain': (64, 128, 256, 512, 1024)},
-          {'name': 'batch_size',       'type': 'discrete',    'domain': (10, 100, 500)},
-          {'name': 'epochs',           'type': 'discrete',    'domain': (5, 10, 20)}]
 
 # function to optimize mnist model
 def f(x):
@@ -125,16 +116,28 @@ def f(x):
     return evaluation[0]
 
 def gpyopt_opt(func_obj,max_iter_no,domain_name):
-    opt_obj=GPyOpt.methods.BayesianOptimization(f=func_obj, domain=bound)
+    opt_obj=GPyOpt.methods.BayesianOptimization(f=func_obj, domain=domain_name)
     opt_obj.run_optimization(max_iter=max_iter_no)
     print("x_opt:",opt_obj.x_opt)
-    
+    return opt_obj
+
 def main():
+    # bounds for hyper-parameters in mnist model
+    # the bounds dict should be in order of continuous type and then discrete type
+    bounds = [{'name': 'validation_split', 'type': 'continuous',  'domain': (0.0, 0.3)},
+            {'name': 'l1_drop',          'type': 'continuous',  'domain': (0.0, 0.3)},
+            {'name': 'l2_drop',          'type': 'continuous',  'domain': (0.0, 0.3)},
+            {'name': 'l1_out',           'type': 'discrete',    'domain': (64, 128, 256, 512, 1024)},
+            {'name': 'l2_out',           'type': 'discrete',    'domain': (64, 128, 256, 512, 1024)},
+            {'name': 'batch_size',       'type': 'discrete',    'domain': (10, 100, 500)},
+            {'name': 'epochs',           'type': 'discrete',    'domain': (5, 10, 20)}]
+
     # optimizer
-    opt_mnist = GPyOpt.methods.BayesianOptimization(f=f, domain=bounds)
+    #opt_mnist = GPyOpt.methods.BayesianOptimization(f=f, domain=bounds)
+    opt_mnist=gpyopt_opt(f,15,bounds)
     # optimize mnist mode
 
-    opt_mnist.run_optimization(max_iter=10)
+    #opt_mnist.run_optimization(max_iter=10)
     print("""
     Optimized Parameters:
     \t{0}:\t{1}

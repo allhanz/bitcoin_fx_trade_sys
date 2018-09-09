@@ -106,14 +106,17 @@ def check_data_downloaed():
     print("inserted_data:\n",inserted_data)
     return inserted_data
 
+def driver_build(url):
+    driver=webdriver.Firefox(executable_path=env.firefox_webdriver_path)
+    driver.get(url)
+    return driver
+
 def main():
     target_text=""
     url="https://www.tradingview.com/chart/K3RNn4xr/"
     phantomJS_driver=webdriver.PhantomJS(executable_path=env.phantomJS_path)
     
-    firefox_driver=webdriver.Firefox(executable_path=env.firefox_webdriver_path)
-    driver=firefox_driver
-    driver.get(url) #phantomjs
+    driver=driver_build(url)
     
     collection=build_bitcoin_database("bitcoin_db","price_collection")
     #collection.create_index([("index", pymongo.DESCENDING)])
@@ -124,18 +127,21 @@ def main():
 
     while(True):
         start_time=time.time()
-        #try:
-        data=get_realtime_price(driver)
-        print("data:",data)
-            #exit()
-        res=collection.insert_one(data)
-            #res=executor.submit(collection.insert_one,data)
-        if not res:
-            #if not res.result:
-            print("insert data error....")
-        #except:
-        #    print("waiting for a minute and try again....")
+        try:
+            data=get_realtime_price(driver)
+            print("data:",data)
+                #exit()
+            res=collection.insert_one(data)
+                #res=executor.submit(collection.insert_one,data)
+            if not res:
+                #if not res.result:
+                print("insert data error....")
+        except:
+            print("waiting for a minute and try again....")
+            driver.close()
+            driver=driver_build(url)
         #    pass
+        
         end_time=time.time()
         spend_time=end_time-start_time  
         if delta_time-spend_time>=0:
