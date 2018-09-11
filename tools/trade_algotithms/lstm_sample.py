@@ -3,6 +3,7 @@ import os
 import sys
 sys.path.append(os.path.abspath("../"))
 import keras
+import env_settings as env
 from keras.datasets import mnist
 from keras.models import Sequential,model_from_json,load_model
 from keras.layers import Dense, Dropout,Activation,BatchNormalization
@@ -34,7 +35,7 @@ class MNIST(): # model name
         self.epochs = epochs
         self.validation_split = validation_split
         self.num_classes=num_classes
-        self.baseSaveDir = "./mnist_model_files/"
+        self.baseSaveDir =os.path.abspath(env.model_file_root_path+"/mnist_model_files/")
         self.model_file=self.baseSaveDir+"model.hdf5"
         self.model_arch=self.baseSaveDir+"model.json"
         self.best_model=self.baseSaveDir+"best_model.hdf5"
@@ -42,7 +43,8 @@ class MNIST(): # model name
         
         self.__x_train, self.__x_test, self.__y_train, self.__y_test = self.mnist_data()
         self.__model = self.build_model()
-    
+        self.create_model_folder()
+
     def create_model_folder(self):
         if not os.path.isdir(self.baseSaveDir):
             os.makedirs(self.baseSaveDir)
@@ -67,9 +69,9 @@ class MNIST(): # model name
         return x_train, x_test, y_train, y_test
 
     def build_model(self):
-        if self.best_model:
+        if os.path.exists(self.best_model):
             model=load_model(self.best_model)
-        elif self.model_file:
+        elif os.path.exists(self.model_file):
             model=load_model(self.model_file)
         else:
             model = Sequential()

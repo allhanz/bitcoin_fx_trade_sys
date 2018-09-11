@@ -11501,3 +11501,27 @@ JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch res
 1536672064264	Marionette	DEBUG	[2147483649] Received DOM event DOMContentLoaded for https://www.tradingview.com/chart/K3RNn4xr/
 1536672066686	Marionette	DEBUG	[2147483649] Received DOM event pageshow for https://www.tradingview.com/chart/K3RNn4xr/
 JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1536672362863	Marionette	DEBUG	[2147483649] Received DOM event beforeunload for https://www.tradingview.com/chart/K3RNn4xr/
+1536672363507	Marionette	DEBUG	[2147483649] Received DOM event pagehide for https://www.tradingview.com/chart/K3RNn4xr/
+1536672363508	Marionette	DEBUG	[2147483649] Received DOM event unload for https://www.tradingview.com/chart/K3RNn4xr/
+1536672364354	Marionette	DEBUG	[2147483649] Received DOM event DOMContentLoaded for https://www.tradingview.com/chart/K3RNn4xr/
+1536672366585	Marionette	DEBUG	[2147483649] Received DOM event pageshow for https://www.tradingview.com/chart/K3RNn4xr/
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1536672662934	Marionette	DEBUG	[2147483649] Received DOM event beforeunload for https://www.tradingview.com/chart/K3RNn4xr/
+1536672663673	Marionette	DEBUG	[2147483649] Received DOM event pagehide for https://www.tradingview.com/chart/K3RNn4xr/
+1536672663673	Marionette	DEBUG	[2147483649] Received DOM event unload for https://www.tradingview.com/chart/K3RNn4xr/
+1536672664741	Marionette	DEBUG	[2147483649] Received DOM event DOMContentLoaded for https://www.tradingview.com/chart/K3RNn4xr/
+1536672666570	Marionette	DEBUG	[2147483649] Received DOM event pageshow for https://www.tradingview.com/chart/K3RNn4xr/
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1536672963031	Marionette	DEBUG	[2147483649] Received DOM event beforeunload for https://www.tradingview.com/chart/K3RNn4xr/
+1536672963575	Marionette	DEBUG	[2147483649] Received DOM event pagehide for https://www.tradingview.com/chart/K3RNn4xr/
+1536672963575	Marionette	DEBUG	[2147483649] Received DOM event unload for https://www.tradingview.com/chart/K3RNn4xr/
+1536672964474	Marionette	DEBUG	[2147483649] Received DOM event DOMContentLoaded for https://www.tradingview.com/chart/K3RNn4xr/
+1536672966541	Marionette	DEBUG	[2147483649] Received DOM event pageshow for https://www.tradingview.com/chart/K3RNn4xr/
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1536673263123	Marionette	DEBUG	[2147483649] Received DOM event beforeunload for https://www.tradingview.com/chart/K3RNn4xr/
+1536673263668	Marionette	DEBUG	[2147483649] Received DOM event pagehide for https://www.tradingview.com/chart/K3RNn4xr/
+1536673263668	Marionette	DEBUG	[2147483649] Received DOM event unload for https://www.tradingview.com/chart/K3RNn4xr/
+1536673265267	Marionette	DEBUG	[2147483649] Received DOM event DOMContentLoaded for https://www.tradingview.com/chart/K3RNn4xr/
+1536673267677	Marionette	DEBUG	[2147483649] Received DOM event pageshow for https://www.tradingview.com/chart/K3RNn4xr/
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.

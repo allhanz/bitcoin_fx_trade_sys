@@ -74,3 +74,5 @@ dump_file_path=db_path+"/dump.rdb"
 redis_his_root_path=common_data_root_path+"/redis_his_data"
 redis_daily_data_path=redis_his_root_path+"/daily_data"
 
+#model file root path
+model_file_root_path=common_data_root_path+"/model_files"
