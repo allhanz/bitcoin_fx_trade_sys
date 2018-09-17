@@ -3,8 +3,13 @@ import sys
 sys.path.append(os.path.abspath("../"))
 import pandas as pd
 import numpy as np
+import env_settings as env
 import bokeh_plot_api
 import talib
+
+
+#notice:
+# np_array data includes high low open_price close_price
 
 #talib api website
 #https://github.com/elsen-trading/talib
@@ -115,7 +120,7 @@ def rsi(np_array):
 def macd(np_array):
     cols = ['MACD', 'MACD_signal', 'MACD_hist']
     if check_np_array(np_array):
-        return talib.MACD(np_array):
+        return talib.MACD(np_array)
 
 # APO: Absolute Price Oscillator
 def apo(np_array):
@@ -146,7 +151,7 @@ def dcPhase(np_array):
 def phasor(np_array):
     cols = ['HT_PHASOR_inphase', 'HT_PHASOR_quadrature']
     if check_np_array(np_array):
-        return talib.HT_PHASOR(np_array):
+        return talib.HT_PHASOR(np_array)
 
 # ヒルベルト変換 - SineWave
 def sineWave(np_array):
@@ -166,10 +171,9 @@ def sma_60(np_array):
 
 # 15日ボリンジャー・バンド
 def bbands_15(np_array):
-    cols = ['BBANDS15_upperband', 'BBANDS15_middleband', 'BBANDS15_lowerband
+    cols = ['BBANDS15_upperband', 'BBANDS15_middleband', 'BBANDS15_lowerband']
     if check_np_array(np_array):
-        talib.BBANDS(np_array, timeperiod=15, nbdevup=2, nbdevdn=2, matype=0):
-']
+        talib.BBANDS(np_array, timeperiod=15, nbdevup=2, nbdevdn=2, matype=0)
 
 # 21日RSI
 def rsi_21(np_array):
@@ -177,9 +181,15 @@ def rsi_21(np_array):
         return talib.RSI(np_array, timeperiod=21)
 
 def main():
-    pass
+    test_file=env.test_file
+    if os.path.exists(test_file):
+        pd_data=pd.read_csv(test_file,encoding="utf-8")
+        pd_data.columns=["name","date_time","ask","bid"]
+        print("pd_data head:\n",pd_data.head())
+    else:
+        print("not exist....")
 
-if __name__=="__name__":
+if __name__=="__main__":
     main()
 
 

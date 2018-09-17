@@ -29,7 +29,6 @@ Unsigned long long min: 0 max: 18446744073709551615
 """
 MAX_RANGE=10**10
 
-
 data_format={
     "_id":None,
     "name":None,
@@ -212,7 +211,7 @@ def main():
                 
                 if not res:
                 #if not res.result:
-                    print("insert data error....")
+                    print("insert data into mongodb error....")
 
             except:
                 print("waiting for a minute and try again....")

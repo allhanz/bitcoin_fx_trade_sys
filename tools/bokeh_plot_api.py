@@ -1,6 +1,7 @@
 import os
 import sys
 import bokeh
+#bokeh.sampledata.download()
 from bokeh.plotting import figure, show, output_file
 from bokeh.sampledata.stocks import MSFT
 

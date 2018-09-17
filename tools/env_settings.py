@@ -59,8 +59,6 @@ stopwords_data_path=nlp_lib_root_path+"/stopwords_list"
 english_stopword_file=stopwords_data_path+"/english/en_stopwords.csv"
 japanese_stopword_file=stopwords_data_path+"/english/jp_stopwords.csv"
 
-nlp_test_file=common_data_root_path+"/nlp_test_words.txt"
-
 #bitcoin data
 bitcoin_data_root_path=common_data_root_path+"/bitcoin_data"
 
@@ -76,3 +74,8 @@ redis_daily_data_path=redis_his_root_path+"/daily_data"
 
 #model file root path
 model_file_root_path=common_data_root_path+"/model_files"
+
+
+#test data
+test_file=common_data_root_path+"/test_data/USDJPY-2017-01.csv"
+nlp_test_file=common_data_root_path+"/nlp_test_words.txt"

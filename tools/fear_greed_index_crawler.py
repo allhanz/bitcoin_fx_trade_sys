@@ -19,7 +19,7 @@ from PIL import Image
 from io import BytesIO
 import env_settings as env
 import redis_datatabase_api
-
+import webdriver_manager
 
 
 data_format={
@@ -70,6 +70,7 @@ def driver_rebuild(url):
 def main():
     url="https://alternative.me/crypto/fear-and-greed-index/"
     driver=webdriver.Firefox(executable_path=env.firefox_webdriver_path)
+    #driver=webdriver.PhantomJS(executable_path=env.phantomJS_path)
     collection=build_bitcoin_database("bitcoin_db","fear_index_collection")
     driver.get(url)
     delta_time=60*60 #unit second
