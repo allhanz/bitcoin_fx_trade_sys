@@ -26,12 +26,12 @@ class simple_seq2seq():
         validation_split,
         num_classes):
         
-        self.input_dim=None
+        self.input_dim=input_dim
         self.input_length=input_length
-        self.hidden_dim=None
-        self.output_dim=None
-        self.output_length=None
-        self.depth=None
+        self.hidden_dim=hidden_dim
+        self.output_dim=output_dim
+        self.output_length=output_length
+        self.depth=depth
         self.loss_func_name="mse"
         self.optimizer_name="rmsprop"
         self.test_rate=0.2
@@ -40,7 +40,7 @@ class simple_seq2seq():
         self.epochs = epochs
         self.validation_split = validation_split
         self.num_classes=num_classes
-        self.baseSaveDir = "./simple_model_files/"
+        self.baseSaveDir = env.model_file_root_path+"/simple_seq2seq_model_files/"
         self.model_file=self.baseSaveDir+"model.hdf5"
         self.model_arch=self.baseSaveDir+"model.json"
         self.best_model=self.baseSaveDir+"best_model.hdf5"
@@ -60,13 +60,17 @@ class simple_seq2seq():
         #model = SimpleSeq2Seq(input_dim=, hidden_dim=10, output_length=8, output_dim=20, depth=(4, 5))
         self.model = SimpleSeq2Seq(input_dim=self.input_dim, hidden_dim=self.hidden_dim, output_length=self.output_length, output_dim=self.output_dim, depth=self.depth)
         self.model.compile(loss='mse', optimizer='rmsprop')
-
+    
+    def run_model(self):
+        self.model.fit(batch_size=self.batch_size,
+            epochs=self.epochs,
+            validation_split=self.validation_split)
 
 
 class std_seq2seq():
     def __init__(self):
         self.input_dim=None
-        self.batch_input_shape=(16,7,5)
+        self.batch_input_shape=
         self.hidden_dim=None
         self.output_length=None
         self.output_dim=None

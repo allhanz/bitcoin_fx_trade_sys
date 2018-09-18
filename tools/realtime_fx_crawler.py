@@ -201,10 +201,21 @@ def main():
     driver=build_webdriver("firefox")
     time.sleep(1)
     driver.get(oanda_live_fx_rates_url)
+    today_now=int(datetime.now().strftime("%Y%m%d"))
+
     while(True):
         start_time=time.time()
+        today_next=int(datetime.now().strftime("%Y%m%d"))
+        print("today_next:",today_next)
+        print("today_now:",today_now)
+
         for xpath_dict in fx_xpath_dict_list:
             redis_index=xpath_dict["name"]+"_"+str(count)
+            redis_ptn=xpath_dict["name"]+"_[0-9]*"
+            if today_next>today_now:
+                today_now=today_next
+                redis_datatabase_api.delete_data_by_ptn(r,redis_ptn)
+                count=0
             try:
                 fx_data=get_realtime_fx_price_in_oanda(driver,xpath_dict)
                 print("fx_data:",fx_data)

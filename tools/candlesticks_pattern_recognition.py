@@ -14,6 +14,7 @@ import trade_algotithms.technical_analysis
 import env_settings as env
 from matplotlib.dates import date2num
 from plotly.offline import init_notebook_mode, iplot
+import plotly
 import plotly.figure_factory as FF
 import plotly.graph_objs as go
 import plotly.plotly as py
@@ -71,6 +72,7 @@ def test_code():
     plt.savefig('Test.png')
 
     plt.show()
+
 def sample_code():
     sample_data = [
     [732797.0, 10, 18,  5, 20],
@@ -419,45 +421,13 @@ class candlesticks_pattern_detect_lib():
     def plot_candlestick(self):
         #has problem
         #init_notebook_mode(connected=True) # Jupyter notebook用設定
-        #if not self.ohlc_pd.empty:
-            #fig = FF.create_candlestick(self.ohlc_pd.open,self.ohlc_pd.high,self.ohlc_pd.low,self.ohlc_pd.close, dates=self.ohlc_pd.index)
-            #iplot(fig,asFigure=True)
-        #    mcd_candle = go.Candlestick(x=self.ohlc_pd.index,open=self.ohlc_pd.open,high=self.ohlc_pd.high,low=self.ohlc_pd.low,close=self.ohlc_pd.close)
+        if not self.ohlc_pd.empty:
+            fig = FF.create_candlestick(self.ohlc_pd.open,self.ohlc_pd.high,self.ohlc_pd.low,self.ohlc_pd.close, dates=self.ohlc_pd.index)
+            plotly.offline.plot(fig, filename='candlestick_analysic.html')
+            #mcd_candle = go.Candlestick(x=self.ohlc_pd.index,open=self.ohlc_pd.open,high=self.ohlc_pd.high,low=self.ohlc_pd.low,close=self.ohlc_pd.close)
         #    data = [mcd_candle]
         #    py.iplot(data, filename='Candle Stick')
-        '''
-        print("columns:\n",self.ohlc_pd.columns)
-        f1, ax = plt.subplots(figsize = (10,5))
-        self.ohlc_pd['date'] = self.ohlc_pd.index.map(mdates.date2num)
-        print("columns:\n",self.ohlc_pd.columns)
 
-        ohlc=self.ohlc_pd[["date","open","high","low","close"]].copy()
-        print("ohlc head data:\n",ohlc.head())
-        # plot the candlesticks
-        candlestick_ohlc(ax, ohlc.values, width=.6, colorup='green', colordown='red')
-        ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d %H:%M:%S'))
-        plt.show()
-        '''
-        mondays = WeekdayLocator(MONDAY)        # major ticks on the mondays
-        alldays = DayLocator()              # minor ticks on the days
-        weekFormatter = DateFormatter('%b %d')  # e.g., Jan 12
-        dayFormatter = DateFormatter('%d')      # e.g., 12
-
-        fig, ax = plt.subplots()
-        fig.subplots_adjust(bottom=0.2)
-        ax.xaxis.set_major_locator(mondays)
-        ax.xaxis.set_minor_locator(alldays)
-        ax.xaxis.set_major_formatter(weekFormatter)
-        candlestick_ohlc(ax, zip(mdates.date2num(self.ohlc_pd.index.to_pydatetime()),
-                         self.ohlc_pd['open'], self.ohlc_pd['high'],
-                         self.ohlc_pd['low'], self.ohlc_pd['close']),
-                 width=0.6)
-
-        ax.xaxis_date()
-        ax.autoscale_view()
-        plt.setp(plt.gca().get_xticklabels(), rotation=45, horizontalalignment='right')
-
-        plt.show()
     
     def get_cdl_location_index(self):
         #get the candlesticks pattern location
@@ -502,17 +472,16 @@ class candlesticks_pattern_detect_lib():
                     self.detect_res[item_detect]=res
 
 def main():
-    sample_code()
-    exit()
     test_file=env.test_file
     pd_data=pd.read_csv(test_file,names=['Symbol', 'Date_Time', 'Bid', 'Ask'],encoding="utf-8",index_col=1, parse_dates=True)
     print("length of the pd_data:",len(pd_data))
     #pd_data.columns=['Symbol', 'Date_Time', 'Bid', 'Ask']
-    test_pd=pd_data.iloc[:10000]
-    print("last data:\n",test_pd.iloc[-1])
+    #test_pd=pd_data.iloc[:10000]
+    test_pd=pd_data.copy()
+    #print("last data:\n",test_pd.iloc[-1])
     #test_pd["Date_Time"]=pd.to_datetime(test_pd["Date_Time"],format='%Y%m%d %H:%M:%S', errors='coerce')
     #print("test_pd:\n",test_pd)
-    time_interval="10T"
+    time_interval="5T"
     data_ask =  test_pd['Ask'].resample(time_interval).ohlc()
     data_bid =  test_pd['Bid'].resample(time_interval).ohlc()
     #print("data_ask head data:\n",data_ask)
@@ -525,6 +494,8 @@ def main():
     cdl_detector=candlesticks_pattern_detect_lib(ohlc_pd=data_bid)
     detect_name=["CDLTRISTAR"]
     cdl_detector.pattern_detector(detect_name,None,None)
+    cdl_detector.plot_candlestick()
+
     print("detect_res:\n",cdl_detector.detect_res.values())
     print("lenght of detect_res:\n",len(cdl_detector.detect_res.values()))
     cdl_detector.get_cdl_location_index()
@@ -532,5 +503,6 @@ def main():
     #cdl_detector.plot_candlestick()
 
 if __name__=="__main__":
-    #main()
-    test_code()
+    main()
+    #test_code()
+    #sample_code()

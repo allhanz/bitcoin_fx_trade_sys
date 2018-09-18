@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.append(os.path.abspath("../"))
+import env_settings as env
 import GPy
 import GPyOpt
 import numpy as np
@@ -9,7 +13,8 @@ from keras.datasets import mnist
 from keras.metrics import categorical_crossentropy
 from keras.utils import np_utils
 from keras.optimizers import Adam
-from keras.callbacks import EarlyStopping
+from keras.callbacks import EarlyStopping,ModelCheckpoint
+import common_util
 
 # MNIST class
 class MNIST():
@@ -32,7 +37,9 @@ class MNIST():
         self.validation_split = validation_split
         self.__x_train, self.__x_test, self.__y_train, self.__y_test = self.mnist_data()
         self.__model = self.mnist_model()
-        
+        self.model_folder=env.model_file_root_path+"/gpyopt_minist_model_files"
+        common_util.mkdirs(self.model_folder)
+
     # load mnist data from keras dataset
     def mnist_data(self):
         (X_train, y_train), (X_test, y_test) = mnist.load_data()
@@ -68,18 +75,26 @@ class MNIST():
     # fit mnist model
     def mnist_fit(self):
         early_stopping = EarlyStopping(patience=0, verbose=1)
-        
         self.__model.fit(self.__x_train, self.__y_train,
                        batch_size=self.batch_size,
                        epochs=self.epochs,
                        verbose=0,
                        validation_split=self.validation_split,
                        callbacks=[early_stopping])
-    
+
+    def best_model_train(self):
+        early_stopping = EarlyStopping(patience=0, verbose=1)
+        model_checker=ModelCheckpoint(filepath=self.model_folder+"/best_model.hdf5",monitor="val_loss",verbose=1,save_best_only=True, mode='auto')
+        self.__model.fit(self.__x_train, self.__y_train,
+                       batch_size=self.batch_size,
+                       epochs=self.epochs,
+                       verbose=0,
+                       validation_split=self.validation_split,
+                       callbacks=[early_stopping,model_checker])
+
     # evaluate mnist model
     def mnist_evaluate(self):
         self.mnist_fit()
-        
         evaluation = self.__model.evaluate(self.__x_test, self.__y_test, batch_size=self.batch_size, verbose=0)
         return evaluation
 
@@ -155,9 +170,13 @@ def main():
             bounds[5]["name"],opt_mnist.x_opt[5],
             bounds[6]["name"],opt_mnist.x_opt[6]))
     print("optimized loss: {0}".format(opt_mnist.fx_opt))
-
-    opt_mnist.x_opt
-
+    
+    best_mnist = MNIST(l1_out=int(opt_mnist.x_opt[3]), l2_out=int(opt_mnist.x_opt[4]), 
+                   l1_drop=float(opt_mnist.x_opt[1]), l2_drop=float(opt_mnist.x_opt[2]), 
+                   batch_size=int(opt_mnist.x_opt[5]), 
+                   epochs=int(opt_mnist.x_opt[6]), 
+                   validation_split=float(opt_mnist.x_opt[0]))
+    best_mnist.best_model_train()
 
 if __name__=="__main__":
     main()

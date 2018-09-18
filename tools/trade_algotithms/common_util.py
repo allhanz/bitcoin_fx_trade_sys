@@ -7,6 +7,10 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from matplotlib import pyplot
 
+def mkdirs(folderpath):
+    if not os.path.exists(folderpath):
+        os.makedirs(folderpath)
+
 def data_preprocess(array_X,array_Y,test_size):
     (X_train, X_test, y_train, y_test)= train_test_split( array_X, array_Y, test_size = test_size, random_state = 100)
     return (X_train, X_test, y_train, y_test)
@@ -61,7 +65,8 @@ def main():
     scan_ptn="bitflyer_bitcoin_price_[0-9]*"
     db_data=load_train_data(scan_ptn)
     print("length of db_data:",len(db_data))
-    #print("db_data:",db_data)
+    print("db_data head:",db_data.head())
+
     values=bitflyer_data_preprocess(db_data)
     print("shape of values:",values.shape)
     print("data:",values)

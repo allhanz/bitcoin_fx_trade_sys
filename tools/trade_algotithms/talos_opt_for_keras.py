@@ -1,6 +1,8 @@
 # talos
 # Hyperparameter Optimization for Keras Models
 #website: https://towardsdatascience.com/hyperparameter-optimization-with-keras-b82e6364ca53
+#also gpyopt can be used in keras
+
 import talos as ta
 import os
 import itertools
