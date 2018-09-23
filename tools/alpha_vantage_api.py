@@ -17,6 +17,8 @@ import mongodb_api
 import redis_datatabase_api
 import hashlib
 import time
+from datetime import datetime
+
 # need premium api_key
 
 API_URL = "https://www.alphavantage.co/query"
@@ -203,17 +205,34 @@ def build_fx_mongodb(db_name,collection_name):
 
 ts = TimeSeries(key=api_key,retries=5,output_format='pandas',indexing_type='integer')
 
+def redis_fx_data_delete(r,fx_symbols):
+    for item in fx_symbols:
+        from_symbol_name,to_symbol_name=item
+        scan_ptn=from_symbol_name+"_to_"+to_symbol_name+"_[0-9]*"
+        redis_datatabase_api.delete_data_by_ptn(r,scan_ptn)
+
 def main():
     fx_symbols=[("USD","JPY"),("CNY","JPY")]
     fx_collection=build_fx_mongodb("fx_db","price_collection")
     r=redis_datatabase_api.build_realtime_db()
     count=0
     delta_time=60
+    today_now=int(datetime.now().strftime("%Y%m%d"))
+    redis_fx_data_delete(r,fx_symbols)
+
     while(True):
         start_time=time.time()
         for item in fx_symbols:
             from_symbol_name,to_symbol_name=item
             redis_index=from_symbol_name+"_to_"+to_symbol_name+"_"+str(count)
+
+            today_next=int(datetime.now().strftime("%Y%m%d"))
+            print("today_next:",today_next)
+            print("today_now:",today_now)
+            if today_next>today_now:
+                redis_fx_data_delete(r,fx_symbols)
+                count=0
+                today_now=today_next
             try:
                 data=get_realtime_fx_data(from_symbol_name,to_symbol_name)
             except:

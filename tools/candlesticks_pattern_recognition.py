@@ -10,11 +10,15 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.dates import num2date, date2num
 from matplotlib.dates import DateFormatter, WeekdayLocator,DayLocator, MONDAY
+#technical analysis lib
 import trade_algotithms.technical_analysis
+
 import env_settings as env
 from matplotlib.dates import date2num
 from plotly.offline import init_notebook_mode, iplot
 import plotly
+print("plotly version:",plotly.__version__)
+
 import plotly.figure_factory as FF
 import plotly.graph_objs as go
 import plotly.plotly as py
@@ -418,17 +422,38 @@ class candlesticks_pattern_detect_lib():
         else:
             self.ohlc_np=None
 
-    def plot_candlestick(self):
-        #has problem
+    def plot_all(self):
+        #still has problem
         #init_notebook_mode(connected=True) # Jupyter notebook用設定
         if not self.ohlc_pd.empty:
-            fig = FF.create_candlestick(self.ohlc_pd.open,self.ohlc_pd.high,self.ohlc_pd.low,self.ohlc_pd.close, dates=self.ohlc_pd.index)
-            plotly.offline.plot(fig, filename='candlestick_analysic.html')
+            fig_ff = FF.create_candlestick(self.ohlc_pd.open,self.ohlc_pd.high,self.ohlc_pd.low,self.ohlc_pd.close, dates=self.ohlc_pd.index)
+            fig=go.Candlestick(
+                x=self.ohlc_pd.index,
+                open=self.ohlc_pd.open,
+                high=self.ohlc_pd.high,
+                low=self.ohlc_pd.low,
+                close=self.ohlc_pd.close)
+            figure_list=self.technical_analysis()
+            #figure_list.append(fig.data)
+            #if len(figure_list)>0:
+            #    for item in figure_list:
+            #       fig["data"].append(item.data)
+            #plotly.offline.plot([fig], filename='candlestick.html')
+            plotly.offline.plot(figure_list, filename='technical_analysis.html')
+            plotly.offline.plot(fig_ff, filename='candlestick_ff.html')
             #mcd_candle = go.Candlestick(x=self.ohlc_pd.index,open=self.ohlc_pd.open,high=self.ohlc_pd.high,low=self.ohlc_pd.low,close=self.ohlc_pd.close)
         #    data = [mcd_candle]
         #    py.iplot(data, filename='Candle Stick')
 
-    
+    def technical_analysis(self):
+        figure_list=[]
+        windows_list=[10,20,50]
+        for item in windows_list:
+            sma_windows= self.ohlc_pd.close.rolling(window=item).mean()
+            fig_data = go.Scatter(x=sma_windows.index, y=sma_windows.values, mode='lines', name='sma'+str(item))
+            figure_list.append(fig_data)
+        return figure_list
+
     def get_cdl_location_index(self):
         #get the candlesticks pattern location
         for key in self.detect_res.keys():
@@ -494,13 +519,13 @@ def main():
     cdl_detector=candlesticks_pattern_detect_lib(ohlc_pd=data_bid)
     detect_name=["CDLTRISTAR"]
     cdl_detector.pattern_detector(detect_name,None,None)
-    cdl_detector.plot_candlestick()
+    cdl_detector.plot_all()
 
     print("detect_res:\n",cdl_detector.detect_res.values())
     print("lenght of detect_res:\n",len(cdl_detector.detect_res.values()))
     cdl_detector.get_cdl_location_index()
     print("index info:\n",cdl_detector.cdl_ptn_index)
-    #cdl_detector.plot_candlestick()
+
 
 if __name__=="__main__":
     main()

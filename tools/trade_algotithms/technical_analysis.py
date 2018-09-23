@@ -37,13 +37,14 @@ def moving_average(pd_data,period_time):
     else:
         print("data  error....")
 
-# 単純移動平均(SMA: Simple Moving Average)
+
 def check_np_array(np_array):
     if isinstance(np_array,np):
         return True
     else:
         return False
-
+        
+# 単純移動平均(SMA: Simple Moving Average)
 def sma(np_array):
     if check_np_array(np_array):
         return talib.SMA(np_array)
