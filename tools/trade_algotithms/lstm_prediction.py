@@ -22,13 +22,17 @@ import common_util
 from numpy import newaxis
 import numpy as np
 from keras.utils import to_categorical
+from keras.layers.recurrent import LSTM
+import matplotlib.pyplot as plt
 #data process common methods
+
+#reference website:https://www.kaggle.com/pablocastilla/predict-stock-prices-with-lstm
 
 # define the deep learning model, including the train and test data and model running....
 class MNIST(): # model name
-    def __init__(self, input_shape=(None,1), output_num=1,l1_out=512, l2_out=512, l1_drop=0.2, l2_drop=0.2, batch_size=100, epochs=10, 
+    def __init__(self, input_dim=1, output_num=1,l1_out=512, l2_out=512, l1_drop=0.2, l2_drop=0.2, batch_size=100, epochs=10, 
                                 validation_split=0.1,num_classes=10):
-        self.__input_shape = input_shape
+        self.__input_dim = input_dim
         self.__output_num = output_num
         self.l1_out = l1_out
         self.l2_out = l2_out
@@ -46,6 +50,7 @@ class MNIST(): # model name
         self.best_arch=self.baseSaveDir+"best_model.json"
         self.redis_scan_ptn="bitflyer_bitcoin_price_[0-9]*"
         self.realtime_data_pd=None
+        self.scaler=None
         self.target_col=["time","buy_price"]
         self.__x_train=None
         self.__x_test=None
@@ -58,6 +63,25 @@ class MNIST(): # model name
     def create_model_folder(self):
         if not os.path.isdir(self.baseSaveDir):
             os.makedirs(self.baseSaveDir)
+
+    # convert an array of values into a dataset matrix
+    #lookback the 5minute data
+    def create_dataset(self,dataset, look_back=60*5):
+        dataX, dataY = [], []
+        for i in range(len(dataset)-look_back-1):
+            a = dataset[i:(i+look_back), 0]
+            dataX.append(a)
+            dataY.append(dataset[i + look_back, 0])
+        return np.array(dataX), np.array(dataY)
+
+    def plot_results_multiple(self,length):
+        if length==None:
+            length=500
+        predicted_data=self.__model.predict(self.__x_test)
+        true_data=self.__y_test
+        plt.plot(self.scaler.inverse_transform(true_data.reshape(-1, 1))[length:])
+        plt.plot(self.scaler.inverse_transform(np.array(predicted_data).reshape(-1, 1))[length:])
+        plt.show()
 
     # load mnist data from keras dataset
     def load_data(self):
@@ -72,16 +96,29 @@ class MNIST(): # model name
 
     def train_data_builder(self):
         self.load_data()
-        train_data=self.realtime_data_pd['buy_price'].values
-        dataX,dataY=common_util.create_dataset(train_data[:,newaxis],look_back=100)
-        trainX = np.reshape(dataX, (dataX.shape[0], dataX.shape[1],1))
-        #scaler = MinMaxScaler(feature_range=(0, 1))
-        #scaled_data=scaler.fit_transform(ordered_pd.values)
-        self.__x_train, self.__x_test, self.__y_train, self.__y_test = train_test_split(trainX, dataY, test_size=self.validation_split, random_state=42)
+        realtime_data=self.realtime_data_pd['buy_price'].values.astype('float32')
+        realtime_data=realtime_data.reshape(len(realtime_data),1)
+        plt.plot(realtime_data)
+        plt.show()
+        scaler = MinMaxScaler(feature_range=(0, 1))
+        realtime_data= scaler.fit_transform(realtime_data)
+        self.scaler=scaler
+        train,test=train_test_split(realtime_data, test_size=self.validation_split)
+        
+        print(len(train), len(test))
+        look_back = 1
+        trainX, trainY = self.create_dataset(train, look_back)
+        testX, testY = self.create_dataset(test, look_back)
+        trainX = np.reshape(trainX, (trainX.shape[0], 1, trainX.shape[1]))
+        testX = np.reshape(testX, (testX.shape[0], 1, testX.shape[1]))
+        self.__x_train=trainX
+        self.__x_test=testX
+        self.__y_train=trainY
+        self.__y_test=testY
         print('length of __x_train:',len(self.__x_train))
         print('length of __y_train:',len(self.__y_train))
         print('length of __x_test:',len(self.__x_test))
-        print('length of __y_test:',len(self.__y_test))       
+        print('length of __y_test:',len(self.__y_test))
         print('shape of __x_train:',self.__x_train.shape)
         print('shape of __y_train:',self.__y_train.shape)
 
@@ -92,16 +129,24 @@ class MNIST(): # model name
             model=load_model(self.model_file)
         else:
             model = Sequential()
-            model.add(Dense(self.l1_out, input_shape=self.__input_shape))
+            model.add(LSTM(
+                self.l1_out,
+                input_dim=self.__input_dim,
+                return_sequences=True))
             model.add(Activation('relu'))
             model.add(Dropout(self.l1_drop))
-            model.add(Dense(self.l2_out))
+            model.add(LSTM(
+                self.l2_out,
+                ))
             model.add(Activation('relu'))
             model.add(Dropout(self.l2_drop))
             model.add(Dense(self.__output_num))
             model.add(Activation('softmax'))
-            model.compile(loss='categorical_crossentropy',optimizer=Adam(),metrics=['accuracy'])
-
+            #model.compile(loss='mse',optimizer=Adam(),metrics=['accuracy'])
+            #model.compile(loss='mse', optimizer='rmsprop')
+            model.compile(loss='mse', optimizer='adam')
+        print(model.summary())
+        exit()
         return model
 
     def model_fit(self,chkpt_file=None):
@@ -116,7 +161,8 @@ class MNIST(): # model name
                         epochs=self.epochs,
                         verbose=1,
                         validation_data=(self.__x_test,self.__y_test),
-                        callbacks=[es_cb,cp_cb],
+                        #callbacks=[es_cb,cp_cb],
+                        callbacks=[cp_cb],
                         shuffle=True)
 
     def evaluate_model(self,chkpt_file):
@@ -138,13 +184,13 @@ def f_map(x):
     print(evaluation)
     return evaluation[0]
 
-def model_training_process(input_shape=(None,1), output_num=1,
+def model_training_process(input_dim=1, output_num=1,
     l1_out=512, l2_out=512, 
     l1_drop=0.2, l2_drop=0.2, 
     batch_size=100, epochs=10,
     validation_split=0.1,chkpt_file=None):
 
-    _mnist = MNIST(input_shape=input_shape, output_num=output_num,
+    _mnist = MNIST(input_dim=input_dim, output_num=output_num,
                                         l1_out=l1_out, l2_out=l2_out, 
                                         l1_drop=l1_drop, l2_drop=l2_drop, 
                                         batch_size=batch_size, epochs=epochs, 
@@ -181,6 +227,7 @@ def main():
     lstm_model.load_data()
     lstm_model.train_data_builder()
     lstm_model.model_fit()
+    lstm_model.plot_results_multiple(1000)
     
 if __name__=="__main__":
     main()

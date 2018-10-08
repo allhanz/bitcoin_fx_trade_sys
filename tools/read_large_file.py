@@ -13,6 +13,6 @@ def insert_large_data_into_mongodb(collection_obj,csv_file,chunksize):
 
 
 def main():
-
+    pass
 if __name__=="__main__":
     main()
